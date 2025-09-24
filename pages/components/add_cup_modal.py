@@ -23,8 +23,6 @@ class AddCupModal:
         """Initialize the AddCupModal component."""
         self.driver = driver
 
-    # Queries
-
     def is_open(self) -> bool:
         """Return True if the dialog is displayed and has the 'open' attribute."""
         try:
@@ -40,8 +38,6 @@ class AddCupModal:
     def get_product_name(self) -> str:
         """Product name shown in the dialog."""
         return self.driver.find_element(*self.PRODUCT_NAME).text
-
-    # Actions
 
     def confirm(self) -> None:
         """Click 'Yes' to add to cart."""
