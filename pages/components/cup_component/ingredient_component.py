@@ -7,7 +7,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from pages.base import BaseComponent
 
 
-class IngredientComponent:
+class IngredientComponent(BaseComponent):
     """Represents a single ingredient inside a cup."""
 
     def __init__(self, driver: WebDriver, parent: Any) -> None:
