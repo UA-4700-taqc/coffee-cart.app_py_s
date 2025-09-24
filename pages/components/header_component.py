@@ -3,9 +3,10 @@ from selenium.webdriver.common.by import By
 
 
 class HeaderComponent:
-    """Empty HeaderComponent class for header logic."""
+    """Class to represent the header UI component and its logic."""
 
     def __init__(self, driver):
+        """Initializes the HeaderComponent with the web driver."""
         self.driver = driver
 
 
@@ -25,4 +26,4 @@ class HeaderComponent:
         """Clicks the 'GitHub' link."""
         self.driver.find_element(*self.github_link).click()
 
-    pass
+
