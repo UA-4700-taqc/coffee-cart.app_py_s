@@ -1,9 +1,11 @@
 """Cart page module."""
-from distlib.locators import Page
+
 from selenium.webdriver.remote.webdriver import WebDriver
 
+from pages.base import BasePage
 
-class CartPage(Page):
+
+class CartPage(BasePage):
     """Cart page object."""
 
     def __init__(self, driver: WebDriver) -> None:

@@ -2,7 +2,7 @@
 
 from typing import List, Tuple
 
-from selenium.webdriver.common.by import By
+from selenium.webdriver.common.by import ByType
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -19,7 +19,7 @@ class BasePage:
         """
         self.driver = driver
 
-    def find_element(self, locator: Tuple[By, str]) -> WebElement:
+    def find_element(self, locator: Tuple[ByType, str]) -> WebElement:
         """
         Find a single element using the given locator.
 
@@ -31,7 +31,7 @@ class BasePage:
         """
         return self.driver.find_element(*locator)
 
-    def find_elements(self, locator: Tuple[By, str]) -> List[WebElement]:
+    def find_elements(self, locator: Tuple[ByType, str]) -> List[WebElement]:
         """
         Find multiple elements using the given locator.
 
@@ -58,7 +58,7 @@ class BaseComponent:
         self.parent = parent
         self.driver = driver
 
-    def find_element(self, locator: Tuple[By, str]) -> WebElement:
+    def find_element(self, locator: Tuple[ByType, str]) -> WebElement:
         """
         Find a single element within the parent using the given locator.
 
@@ -70,7 +70,7 @@ class BaseComponent:
         """
         return self.parent.find_element(*locator)
 
-    def find_elements(self, locator: Tuple[By, str]) -> List[WebElement]:
+    def find_elements(self, locator: Tuple[ByType, str]) -> List[WebElement]:
         """
         Find multiple elements within the parent using the given locator.
 
