@@ -31,3 +31,38 @@ class MenuPage(BasePage):
         """
         cups = self.find_elements(self.locators["cups"])
         return [CupComponent(self.driver, cup) for cup in cups]
+
+    def get_cup_by_name(self, cup_name) -> CupComponent:
+        """
+        Find cup by its name from the list of cups.
+
+        Args:
+            cup_name: name of cup to find.
+
+        Return:
+            Instance of CupComponent with specific cup's name.
+        """
+        for cup in self.cups():
+            if cup.name == cup_name:
+                return cup
+        raise ValueError(f"Cup with name '{cup_name}' not found")
+
+    def click_on_cup_by_name(self, cup_name: str):
+        """
+        Click on cup with specific name.
+
+        Args:
+            cup_name: name of cup to click on.
+        """
+        cup = self.get_cup_by_name(cup_name)
+        cup.click()
+
+    def click_on_cup_by_order(self, order: int):
+        """
+        Click on cup with specific number on the page.
+
+        Args:
+            order: cup to click on.
+        """
+        cups = self.cups()
+        cups[order - 1].click()

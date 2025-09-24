@@ -2,8 +2,8 @@
 
 from typing import Any
 
-from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from pages.base import BaseComponent
@@ -26,3 +26,7 @@ class CupComponent(BaseComponent):
         self.body: WebElement = self.find_element(self.locators["body"])
         self.name: str = self.find_element(self.locators["name"]).text.split("\n")[0].strip()
         self.price: str = self.find_element(self.locators["price"]).text.strip()
+
+    def click(self):
+        """Click on cup's body."""
+        self.body.click()
