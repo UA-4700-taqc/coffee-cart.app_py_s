@@ -1,21 +1,15 @@
-"""Fixture for WebDriver instance."""
+"""Module containing WebDriver setup and teardown logic (fixtures)."""
 import pytest
 from selenium import webdriver
-from selenium.webdriver.ie.service import Service
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-
-from config.resources import BASE_URL, IMPLICIT_WAIT
-
-__all__ = ["driver"]
 
 
 @pytest.fixture()
 def driver():
-    """Fixture to initialize and quit the WebDriver instance."""
+    """Initialize and return the Selenium WebDriver instance."""
     service = Service(ChromeDriverManager().install())
-    chrome_options = webdriver.ChromeOptions()
-    driver = webdriver.Chrome(service=service, options=chrome_options)
-    driver.implicitly_wait(IMPLICIT_WAIT)
-    driver.maximize_window()
+    options = webdriver.ChromeOptions()
+    driver = webdriver.Chrome(service=service, options=options)
     yield driver
     driver.quit()
