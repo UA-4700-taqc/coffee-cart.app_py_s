@@ -58,15 +58,13 @@ class AddCupModal(BaseComponent):
             NoSuchElementException: If modal is not present in DOM.
         """
         try:
-            # First check if modal exists
             if not self.exists():
                 raise NoSuchElementException("Modal is not present in DOM")
 
             return self.find_element(self.locators["MESSAGE"]).text
         except NoSuchElementException as e:
-            # Log the error or handle differently if needed
             print(f"Could not get message text: {str(e)}")
-            return ""  # Return empty string if element not found
+            return ""
 
     def get_product_name(self) -> str:
         """
@@ -79,15 +77,13 @@ class AddCupModal(BaseComponent):
             NoSuchElementException: If modal is not present in DOM.
         """
         try:
-            # First check if modal exists
             if not self.exists():
                 raise NoSuchElementException("Modal is not present in DOM")
 
             return self.find_element(self.locators["PRODUCT_NAME"]).text
         except NoSuchElementException as e:
-            # Log the error or handle differently if needed
             print(f"Could not get product name: {str(e)}")
-            return ""  # Return empty string if element not found
+            return ""
 
     def confirm(self) -> "AddCupModal":
         """Click 'Yes' to add to cart. Returns self."""
