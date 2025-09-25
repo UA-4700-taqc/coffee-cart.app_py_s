@@ -23,6 +23,12 @@ class PayPreviewComponent(BaseComponent):
         "ITEMS": (By.XPATH, ".//li[contains(@class, 'list-item')]"),
     }
 
+    EXPECTED_STYLES = {
+        "background_color": "beige",
+        "border_color": "black",
+        "border_width": "4px",
+    }
+
     def __init__(self, driver: WebDriver, parent: WebElement):
         """
         Initialize the PayPreviewComponent.
