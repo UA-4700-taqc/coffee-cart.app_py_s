@@ -10,7 +10,6 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from pages.base import BaseComponent
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
