@@ -2,7 +2,7 @@
 
 from typing import Dict, List, Tuple
 
-from selenium.webdriver.common.by import ByType
+from selenium.webdriver.common.by import By, ByType
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -15,6 +15,8 @@ DictLocatorType = Dict[str, LocatorType]
 class BasePage:
     """Base class for all page objects."""
 
+    locators: DictLocatorType = {"header": (By.CSS_SELECTOR, "#app > ul")}
+
     def __init__(self, driver: WebDriver) -> None:
         """
         Initialize the BasePage.
@@ -22,7 +24,32 @@ class BasePage:
         Args:
             driver: Selenium WebDriver instance.
         """
+        from pages.components.header_component import HeaderComponent
+
         self.driver = driver
+        header_we = self.driver.find_element(By.CSS_SELECTOR, "#app > ul")
+        self._header: HeaderComponent = HeaderComponent(driver, header_we)
+
+    def go_to_menu_page(self) -> "MenuPage":  # noqa=F821
+        """Navigate to the Menu page and return its page object."""
+        self._header.click_menu()
+        from pages.menu_page import MenuPage
+
+        return MenuPage(self.driver)
+
+    def go_to_cart_page(self) -> "CartPage":  # noqa=F821
+        """Navigate to the Cart page and return its page object."""
+        self._header.click_cart()
+        from pages.cart_page import CartPage
+
+        return CartPage(self.driver)
+
+    def go_to_github_page(self) -> "GitHubPage":  # noqa=F821
+        """Navigate to the GitHub page and return its page object."""
+        self._header.click_github()
+        from pages.githab_page import GitHubPage
+
+        return GitHubPage(self.driver)
 
     def find_element(self, locator: LocatorType) -> WebElement:
         """
