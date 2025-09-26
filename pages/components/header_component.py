@@ -7,12 +7,12 @@ class HeaderComponent(BaseComponent):
 
     def click_menu(self):
         """Click the menu button in the header."""
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def click_cart(self):
         """Click the cart button in the header."""
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def click_github(self):
         """Click the GitHub button in the header."""
-        raise NotImplemented()
+        raise NotImplementedError()

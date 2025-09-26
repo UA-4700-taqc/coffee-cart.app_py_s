@@ -44,12 +44,12 @@ class BasePage:
 
         return CartPage(self.driver)
 
-    def go_to_github_page(self) -> "GithabPage":  # noqa=F821
+    def go_to_github_page(self) -> "GitHubPage":  # noqa=F821
         """Navigate to the GitHub page and return its page object."""
         self._header.click_github()
-        from pages.githab_page import GithabPage
+        from pages.githab_page import GitHubPage
 
-        return GithabPage(self.driver)
+        return GitHubPage(self.driver)
 
     def find_element(self, locator: LocatorType) -> WebElement:
         """

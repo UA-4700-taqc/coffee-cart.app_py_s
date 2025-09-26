@@ -2,7 +2,7 @@
 from pages.base import BasePage
 
 
-class GithabPage(BasePage):
-    """Empty GithabPage class for future implementation."""
+class GitHubPage(BasePage):
+    """Empty GitHubPage class for future implementation."""
 
     pass
