@@ -1,5 +1,6 @@
 """Implement UI component for the Add Cup Modal dialog."""
 
+import logging
 from enum import Enum
 
 from selenium.common.exceptions import NoSuchElementException
@@ -8,6 +9,9 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from pages.base import BaseComponent
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class ButtonType(Enum):
@@ -41,6 +45,7 @@ class AddCupModal(BaseComponent):
         try:
             self.root_element = self.find_element(self.locators["ROOT"])
         except NoSuchElementException:
+            logger.info("AddCupModal not found in DOM")
             self.root_element = None
 
     def exists(self) -> bool:
@@ -122,8 +127,7 @@ class AddCupModal(BaseComponent):
             try:
                 self._get_button_element(ButtonType.YES).click()
             except NoSuchElementException:
-                # Log that button wasn't found but don't fail
-                # This maintains backward compatibility with original behavior
+                logger.warning("Yes button not found in modal")
                 pass
         return self
 
@@ -133,8 +137,7 @@ class AddCupModal(BaseComponent):
             try:
                 self._get_button_element(ButtonType.NO).click()
             except NoSuchElementException:
-                # Log that button wasn't found but don't fail
-                # This maintains backward compatibility with original behavior
+                logger.warning("No button not found in modal")
                 pass
         return self
 
