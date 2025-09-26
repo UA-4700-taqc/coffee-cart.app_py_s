@@ -26,20 +26,9 @@ class CupComponent(BaseComponent):
         self.body: WebElement = self.find_element(self.locators["body"])
         self.name: str = self.find_element(self.locators["name"]).text.split("\n")[0].strip()
         self.price: str = self.find_element(self.locators["price"]).text.strip()
-        # Expose ingredients as a field to match the diagram
-        self.ingredients: List[IngredientComponent] = self._collect_ingredients()
+        self.ingredients: List[IngredientComponent] = self.get_ingredients()
 
-    def _collect_ingredients(self) -> List[IngredientComponent]:
+    def get_ingredients(self) -> List[IngredientComponent]:
         """Return list of ingredient components for this cup."""
-        try:
-            elements = self.find_elements(self.locators["ingredients"])
-        except Exception:
-            return []
-
-        if not hasattr(IngredientComponent, "__init__") or IngredientComponent.__init__ is object.__init__:
-            return []
-
-        try:
-            return [IngredientComponent(self.driver, el) for el in elements]
-        except Exception:
-            return []
+        elements = self.find_elements(self.locators["ingredients"])
+        return [IngredientComponent(self.driver, el) for el in elements]
