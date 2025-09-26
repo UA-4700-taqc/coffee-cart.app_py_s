@@ -1,19 +1,21 @@
 """Base classes for page objects and components using Selenium WebDriver."""
 
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 from selenium.webdriver.common.by import By, ByType
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
-from pages.cart_page import CartPage
-from pages.components.header_component import HeaderComponent
-from pages.githab_page import GithabPage
-from pages.menu_page import MenuPage
+__all__ = ["BasePage", "BaseComponent", "LocatorType", "DictLocatorType"]
+
+LocatorType = Tuple[ByType, str]
+DictLocatorType = Dict[str, LocatorType]
 
 
 class BasePage:
     """Base class for all page objects."""
+
+    locators: DictLocatorType = {"header": (By.CSS_SELECTOR, "#app > ul")}
 
     def __init__(self, driver: WebDriver) -> None:
         """
@@ -22,25 +24,34 @@ class BasePage:
         Args:
             driver: Selenium WebDriver instance.
         """
-        self.driver = driver
-        self._header = HeaderComponent(driver, driver.find_element(By.CSS_SELECTOR, "#app > ul"))
+        from pages.components.header_component import HeaderComponent
 
-    def go_to_menu_page(self) -> "MenuPage":
+        self.driver = driver
+        header_we = self.driver.find_element(By.CSS_SELECTOR, "#app > ul")
+        self._header: HeaderComponent = HeaderComponent(driver, header_we)
+
+    def go_to_menu_page(self) -> "MenuPage":  # noqa=F821
         """Navigate to the Menu page and return its page object."""
         self._header.click_menu()
+        from pages.menu_page import MenuPage
+
         return MenuPage(self.driver)
 
-    def go_to_cart_page(self) -> "CartPage":
+    def go_to_cart_page(self) -> "CartPage":  # noqa=F821
         """Navigate to the Cart page and return its page object."""
         self._header.click_cart()
+        from pages.cart_page import CartPage
+
         return CartPage(self.driver)
 
-    def go_to_github_page(self) -> "GithabPage":
+    def go_to_github_page(self) -> "GithabPage":  # noqa=F821
         """Navigate to the GitHub page and return its page object."""
         self._header.click_github()
+        from pages.githab_page import GithabPage
+
         return GithabPage(self.driver)
 
-    def find_element(self, locator: Tuple[ByType, str]) -> WebElement:
+    def find_element(self, locator: LocatorType) -> WebElement:
         """
         Find a single element using the given locator.
 
@@ -52,7 +63,7 @@ class BasePage:
         """
         return self.driver.find_element(*locator)
 
-    def find_elements(self, locator: Tuple[ByType, str]) -> List[WebElement]:
+    def find_elements(self, locator: LocatorType) -> List[WebElement]:
         """
         Find multiple elements using the given locator.
 
@@ -79,7 +90,7 @@ class BaseComponent:
         self.parent = parent
         self.driver = driver
 
-    def find_element(self, locator: Tuple[ByType, str]) -> WebElement:
+    def find_element(self, locator: LocatorType) -> WebElement:
         """
         Find a single element within the parent using the given locator.
 
@@ -91,7 +102,7 @@ class BaseComponent:
         """
         return self.parent.find_element(*locator)
 
-    def find_elements(self, locator: Tuple[ByType, str]) -> List[WebElement]:
+    def find_elements(self, locator: LocatorType) -> List[WebElement]:
         """
         Find multiple elements within the parent using the given locator.
 
