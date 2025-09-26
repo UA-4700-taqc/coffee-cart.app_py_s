@@ -4,14 +4,14 @@ from typing import Any, List
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from pages.base import BasePage
+from pages.base import BasePage, DictLocatorType
 from pages.components.cup_component.cup_component import CupComponent
 
 
 class MenuPage(BasePage):
     """Coffee menu page."""
 
-    locators = {"cups": (By.XPATH, "//li/h4/..")}
+    locators: DictLocatorType = {"cups": (By.XPATH, "//li/h4/..")}
 
     def __init__(self, driver: WebDriver) -> None:
         """
