@@ -15,9 +15,9 @@ class CartPage(BasePage):
     """Cart page object."""
 
     locators = {
-        "cart_root": (By.CSS_SELECTOR, "main"),
-        "items": (By.CSS_SELECTOR, "ul.cart li"),
-        "pay": (By.CSS_SELECTOR, "section.pay, div.pay, aside.pay"),
+        "cart_root": (By.CSS_SELECTOR, "div.list"),
+        "items": (By.CSS_SELECTOR, "div.list ul:not(.cart-preview) > li.list-item"),
+        "pay_container": (By.CSS_SELECTOR, "div.pay-container"),
     }
 
     def __init__(self, driver: WebDriver) -> None:
@@ -36,11 +36,11 @@ class CartPage(BasePage):
     def items(self) -> List[CartItemComponent]:
         """Return list of cart item components."""
         root = self._root()
-        elements = root.find_elements(*self.locators["items"])  # type: ignore[arg-type]
+        elements = root.find_elements(*self.locators["items"])
         return [CartItemComponent(self.driver, el) for el in elements]
 
     def pay(self) -> PayComponent:
         """Return the pay component for the cart page."""
         root = self._root()
-        pay_element = root.find_element(*self.locators["pay"])  # type: ignore[arg-type]
-        return PayComponent(self.driver, pay_element)  # type: ignore[arg-type]
+        pay_element = root.find_element(*self.locators["pay_container"])
+        return PayComponent(self.driver, pay_element)
