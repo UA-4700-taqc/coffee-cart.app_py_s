@@ -13,24 +13,22 @@ class PromoComponent(BaseComponent):
     """Component representing the promo offer with cup and buttons."""
 
     locators = {
-        "root": (By.CLASS_NAME, "promo"),
-        "text": (By.XPATH, ".//span"),
+        "text": (By.XPATH, ".//span[@class='promo-text']"),
         "cup": (By.XPATH, './/div[@class="cup-body"]'),
         "yes_button": (By.XPATH, './/div[@class="buttons"]/button[1]'),
         "no_button": (By.XPATH, './/div[@class="buttons"]/button[2]'),
     }
 
-    def __init__(self, driver: WebDriver, parent: Any) -> None:
+    def __init__(self, driver: WebDriver, parent: WebElement) -> None:
         """Initialize the component."""
         super().__init__(driver, parent)
-        self.root: WebElement = self.find_element(*self.locators["root"])
-        self.text: str = self.root.find_element(*self.locators["text"]).text.strip()
-        self.cup: CupComponent = CupComponent(driver, self.root.find_element(*self.locators["cup"]))
+        self.text: str = parent.find_element(*self.locators["text"]).text.strip()
+        self.cup: CupComponent = CupComponent(driver, parent.find_element(*self.locators["cup"]))
 
-    def press_yes(self) -> None:
+    def press_yes(self, parent: WebElement) -> None:
         """Click on 'Yes, of course!' button."""
-        self.root.find_element(*self.locators["yes_button"]).click()
+        parent.find_element(*self.locators["yes_button"]).click()
 
-    def press_no(self) -> None:
+    def press_no(self, parent: WebElement) -> None:
         """Click on 'Nah, I'll skip.' button."""
-        self.root.find_element(*self.locators["no_button"]).click()
+        parent.find_element(*self.locators["no_button"]).click()
