@@ -33,7 +33,10 @@ class IngredientComponent(BaseComponent):
     @staticmethod
     def _parse_height(style: str) -> float:
         if "height" in style:
-            num = style.split(":")[1].strip().replace(";", "").replace("%", "")
+            parts = style.split(":")
+            if len(parts) < 2:
+                return 0.0
+            num = parts[1].strip().replace(";", "").replace("%", "")
             try:
                 return float(num)
             except ValueError:
