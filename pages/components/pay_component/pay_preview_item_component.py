@@ -30,4 +30,3 @@ class PayPreviewItemComponent(BaseComponent):
     def decrement_click(self) -> None:
         """Click on the minus button to decrease quantity."""
         self.find_element(*self.locators["minus_button"]).click()
-        # self.quantity -= 1
