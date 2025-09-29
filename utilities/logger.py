@@ -113,20 +113,3 @@ def get_logger(name=None, console_level=logging.INFO):
 
     logger_instance = Logger(name, console_level)
     return logger_instance.get_logger()
-
-
-def get_test_logger(test_name, show_debug=False):
-    """Get a specialized logger for test automation with consistent naming.
-
-    Args:
-        test_name (str): Name of the test (e.g., 'login', 'checkout')
-        show_debug (bool): Whether to show DEBUG messages on console
-
-    Returns:
-        logging.Logger: Configured logger optimized for test automation
-    """
-    console_level = logging.DEBUG if show_debug else logging.INFO
-    logger_name = f"test_{test_name}"
-
-    logger_instance = Logger(logger_name, console_level)
-    return logger_instance.get_logger()
