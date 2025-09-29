@@ -14,24 +14,26 @@ class Logger:
     Supports all Python logging levels: DEBUG, INFO, WARNING, ERROR, CRITICAL.
     """
 
-    def __init__(self, name=None, console_level=logging.INFO, file_level=logging.DEBUG):
+    def __init__(self, name=None, console_level=logging.INFO):
         """Initialize logger with optional name and configurable log levels.
 
         Args:
             name (str, optional): Logger name. If None, uses calling module name.
             console_level (int): Minimum level for console output (default: INFO)
-            file_level (int): Minimum level for file output (default: DEBUG)
         """
         if name is None:
             # Auto-detect calling module name for better traceability
-            frame = inspect.currentframe().f_back
-            caller_module = frame.f_globals.get("__name__", "test_automation")
-            self.logger_name = caller_module
+            caller_info = inspect.stack()[1]
+            try:
+                caller_module = caller_info.frame.f_globals.get("__name__", "test_automation")
+                self.logger_name = caller_module
+            finally:
+                # Explicitly delete the reference to ensure immediate cleanup
+                del caller_info
         else:
             self.logger_name = name
 
         self.console_level = console_level
-        self.file_level = file_level
         self._logger = None
 
     def get_logger(self):
@@ -76,23 +78,23 @@ class Logger:
     # Convenience methods for each log level - following best practices
     def debug(self, message):
         """Log debug message for detailed troubleshooting information."""
-        return self.get_logger().debug(message)
+        self.get_logger().debug(message)
 
     def info(self, message):
         """Log info message for general operational information."""
-        return self.get_logger().info(message)
+        self.get_logger().info(message)
 
     def warning(self, message):
         """Log warning message for potential issues that don't stop execution."""
-        return self.get_logger().warning(message)
+        self.get_logger().warning(message)
 
     def error(self, message):
         """Log error message for serious problems that affected execution."""
-        return self.get_logger().error(message)
+        self.get_logger().error(message)
 
     def critical(self, message):
         """Log critical message for very serious errors that may abort execution."""
-        return self.get_logger().critical(message)
+        self.get_logger().critical(message)
 
 
 def get_logger(name=None, console_level=logging.INFO):
@@ -106,10 +108,15 @@ def get_logger(name=None, console_level=logging.INFO):
         logging.Logger: Configured logger instance with all levels available
     """
     if name is None:
-        # Auto-detect calling module for better maintainability
-        frame = inspect.currentframe().f_back
-        caller_module = frame.f_globals.get("__name__", "test_automation")
-        name = caller_module
+        # Better implementation using inspect.stack() which handles cleanup automatically
+        caller_info = inspect.stack()[1]
+        try:
+            caller_module = caller_info.frame.f_globals.get("__name__", "test_automation")
+        finally:
+            # Explicitly delete the reference to ensure immediate cleanup
+            del caller_info
+    else:
+        caller_module = name
 
-    logger_instance = Logger(name, console_level)
+    logger_instance = Logger(caller_module, console_level)
     return logger_instance.get_logger()
