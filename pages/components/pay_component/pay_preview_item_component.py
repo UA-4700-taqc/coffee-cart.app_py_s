@@ -24,16 +24,12 @@ class PayPreviewItemComponent(BaseComponent):
         self.name: str = parent.find_element(*self.locators["name"]).text.strip()
         self.quantity: int = int(parent.find_element(*self.locators["quantity"]).text[2:])
 
-    def increment_click(self, parent: WebElement) -> None:
+    def increment_click(self) -> None:
         """Click on the plus button to increase quantity."""
-        parent.find_element(*self.locators["plus_button"]).click()
+        self.find_element(*self.locators["plus_button"]).click()
         # self.quantity += 1
 
-    def decrement_click(self, parent: WebElement) -> None:
+    def decrement_click(self) -> None:
         """Click on the minus button to decrease quantity."""
-        parent.find_element(*self.locators["minus_button"]).click()
+        self.find_element(*self.locators["minus_button"]).click()
         # self.quantity -= 1
-
-    def get_preview_item_component(self) -> WebElement:
-        """Get the preview item component."""
-        return self.parent
