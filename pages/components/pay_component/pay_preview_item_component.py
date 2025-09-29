@@ -27,8 +27,6 @@ class PayPreviewItemComponent(BaseComponent):
     def increment_click(self) -> None:
         """Click on the plus button to increase quantity."""
         self.find_element(*self.locators["plus_button"]).click()
-        # self.quantity += 1
-
     def decrement_click(self) -> None:
         """Click on the minus button to decrease quantity."""
         self.find_element(*self.locators["minus_button"]).click()
