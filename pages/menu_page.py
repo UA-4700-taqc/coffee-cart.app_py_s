@@ -1,17 +1,17 @@
 """Menu page for coffee items."""
-from typing import Any, List
+from typing import Any, List, Optional
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from pages.base import BasePage
+from pages.base import BasePage, DictLocatorType
 from pages.components.cup_component.cup_component import CupComponent
 
 
 class MenuPage(BasePage):
     """Coffee menu page."""
 
-    locators = {"cups": (By.XPATH, "//li/h4/..")}
+    locators: DictLocatorType = {"cups": (By.XPATH, "//li/h4/..")}
 
     def __init__(self, driver: WebDriver) -> None:
         """
@@ -32,7 +32,7 @@ class MenuPage(BasePage):
         cups = self.find_elements(self.locators["cups"])
         return [CupComponent(self.driver, cup) for cup in cups]
 
-    def get_cup_by_name(self, cup_name) -> CupComponent:
+    def get_cup_by_name(self, cup_name: str) -> Optional[CupComponent]:
         """
         Find cup by its name from the list of cups.
 
@@ -45,7 +45,6 @@ class MenuPage(BasePage):
         for cup in self.cups():
             if cup.name == cup_name:
                 return cup
-        raise ValueError(f"Cup with name '{cup_name}' not found")
 
     def click_on_cup_by_name(self, cup_name: str):
         """
