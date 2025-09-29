@@ -25,10 +25,10 @@ class PromoComponent(BaseComponent):
         self.text: str = parent.find_element(*self.locators["text"]).text.strip()
         self.cup: CupComponent = CupComponent(driver, parent.find_element(*self.locators["cup"]))
 
-    def press_yes(self, parent: WebElement) -> None:
+    def press_yes(self) -> None:
         """Click on 'Yes, of course!' button."""
-        parent.find_element(*self.locators["yes_button"]).click()
+        self.find_element(*self.locators["yes_button"]).click()
 
-    def press_no(self, parent: WebElement) -> None:
+    def press_no(self) -> None:
         """Click on 'Nah, I'll skip.' button."""
-        parent.find_element(*self.locators["no_button"]).click()
+        self.find_element(*self.locators["no_button"]).click()
