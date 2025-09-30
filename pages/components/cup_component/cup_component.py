@@ -32,7 +32,7 @@ class CupComponent(BaseComponent):
         self.body: WebElement = self.find_element(self.locators["body"])
         self.name: str = self.find_element(self.locators["name"]).text.split("\n")[0].strip()
         self.price: str = self.find_element(self.locators["price"]).text.strip()
-        self.ingredients: List[IngredientComponent] = self.get_ingredients()
+        # self.ingredients: List[IngredientComponent] = self.get_ingredients()
 
     def get_ingredients(self) -> List[IngredientComponent]:
         """Return list of ingredient components for this cup."""

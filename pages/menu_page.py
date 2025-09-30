@@ -3,6 +3,8 @@ from typing import Any, List, Optional
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.base import BasePage, DictLocatorType
 from pages.components.cup_component.cup_component import CupComponent
@@ -74,5 +76,5 @@ class MenuPage(BasePage):
         Returns:
             PromoComponent: The promo banner.
         """
-        promo = self.find_element(self.locators["promo"])
+        promo = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(self.locators["promo"]))
         return PromoComponent(self.driver, promo)

@@ -29,7 +29,7 @@ class HeaderComponent(BaseComponent):
 
     def click_cart(self):
         """Click the 'Cart' link."""
-        self.find_element(*self.locators["cart_link"]).click()
+        self.find_element(self.locators["cart_link"]).click()
         return CartPage(self.driver)
 
     def click_github(self):
