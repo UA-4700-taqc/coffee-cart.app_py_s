@@ -6,6 +6,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
+from utilities.logger import Logger
 
 from pages.base import BaseComponent
 
@@ -35,76 +36,89 @@ class AddCupModal(BaseComponent):
             driver: Selenium WebDriver instance.
             parent: Parent element containing the modal. If None, the body element is used.
         """
+        self.logger = Logger.get_logger("AddCupModal")
+        self.logger.debug("Initializing AddCupModal component")
+
         if parent is None:
-            parent = driver.find_element(self.locators["ROOT"])
+            try:
+                parent = driver.find_element(*self.locators["ROOT"])
+                self.logger.debug("Found modal root element for parent")
+            except NoSuchElementException:
+                self.logger.debug("Modal root element not found for parent")
+
         super().__init__(driver, parent)
         try:
             self.root_element = self.find_element(self.locators["ROOT"])
+            self.logger.debug("Root element found")
         except NoSuchElementException:
+            self.logger.debug("Root element not found")
             self.root_element = None
 
     def is_open(self) -> bool:
         """Return True if the dialog is displayed and has the 'open' attribute."""
         if not self.root_element:
+            self.logger.debug("Modal not open: root element is None")
             return False
-        return self.root_element.is_displayed() and self.root_element.get_attribute("open") is not None
+
+        is_displayed = self.root_element.is_displayed()
+        has_open_attr = self.root_element.get_attribute("open") is not None
+        is_open = is_displayed and has_open_attr
+
+        self.logger.debug(f"Modal open status: {is_open}")
+        return is_open
 
     def get_message_text(self) -> str:
-        """
-        Return the full dialog message text.
+        """Return the full dialog message text.
 
         Returns:
             str: The message text or empty string if element not found.
-
-        Raises:
-            NoSuchElementException: If modal is not present in DOM.
         """
         if not self.root_element:
+            self.logger.debug("Cannot get message: root element is None")
             return ""
 
         try:
-            return self.root_element.find_element(By.XPATH, self.locators["MESSAGE"][1]).text
+            message = self.root_element.find_element(By.XPATH, self.locators["MESSAGE"][1]).text
+            self.logger.debug(f"Found message text: '{message}'")
+            return message
         except NoSuchElementException:
+            self.logger.debug("Message element not found")
             return ""
 
     def get_product_name(self) -> str:
-        """
-        Return only the product name from the dialog.
+        """Return only the product name from the dialog.
 
         Returns:
             str: The product name or empty string if element not found.
-
-        Raises:
-            NoSuchElementException: If modal is not present in DOM.
         """
         if not self.root_element:
+            self.logger.debug("Cannot get product name: root element is None")
             return ""
 
         try:
-            return self.root_element.find_element(By.XPATH, self.locators["PRODUCT_NAME"][1]).text
+            product_name = self.root_element.find_element(By.XPATH, self.locators["PRODUCT_NAME"][1]).text
+            self.logger.debug(f"Found product name: '{product_name}'")
+            return product_name
         except NoSuchElementException:
+            self.logger.debug("Product name element not found")
             return ""
 
     def _get_button_element(self, button_type: ButtonType) -> WebElement:
-        """
-         Implement a helper method to get a button element.
+        """Implement a helper method to get a button element.
 
         Args:
             button_type: Type of button to retrieve
 
         Returns:
             WebElement: The button element
-
-        Raises:
-            NoSuchElementException: If modal is not present or button not found
-            ValueError: If invalid button_type provided
         """
         if not self.root_element:
-            raise NoSuchElementException("Modal is not present in DOM")
+            self.logger.debug("Cannot get button: root element is None")
 
         if not isinstance(button_type, ButtonType):
-            raise ValueError(f"button_type must be a ButtonType enum, got {type(button_type)}")
+            self.logger.debug(f"Invalid button type provided: {type(button_type)}")
 
+        self.logger.debug(f"Getting {button_type.name} button")
         return self.root_element.find_element(By.XPATH, self.locators[button_type.value][1])
 
     def confirm(self) -> "AddCupModal":
@@ -112,22 +126,39 @@ class AddCupModal(BaseComponent):
         Click 'Yes' button to add item to cart.
 
         Returns:
-        AddCupModal: Self reference for method chaining.
+            AddCupModal: Self reference for method chaining.
         """
+        self.logger.debug("Attempting to confirm modal")
+
         if self.root_element:
             try:
                 self._get_button_element(ButtonType.YES).click()
+                self.logger.debug("Modal confirmed")
             except NoSuchElementException:
-                pass
+                self.logger.debug("Yes button not found")
+        else:
+            self.logger.debug("Cannot confirm: root element is None")
+
         return self
 
     def cancel(self) -> "AddCupModal":
-        """Click 'No' to dismiss. Returns self."""
+        """
+        Click 'No' button to dismiss the modal.
+
+        Returns:
+            AddCupModal: Self reference for method chaining.
+        """
+        self.logger.debug("Attempting to cancel modal")
+
         if self.root_element:
             try:
                 self._get_button_element(ButtonType.NO).click()
+                self.logger.debug("Modal canceled")
             except NoSuchElementException:
-                pass
+                self.logger.debug("No button not found")
+        else:
+            self.logger.debug("Cannot cancel: root element is None")
+
         return self
 
     def get_computed_style(self, element: WebElement, property_name: str) -> str:
@@ -141,6 +172,8 @@ class AddCupModal(BaseComponent):
         Returns:
             str: Computed style value
         """
+        self.logger.debug(f"Getting computed style: {property_name}")
+
         script = f"return window.getComputedStyle(arguments[0]).{property_name};"
         return self.driver.execute_script(script, element)
 
@@ -150,14 +183,12 @@ class AddCupModal(BaseComponent):
 
         Returns:
             dict: Dictionary of CSS properties and their values
-
-        Raises:
-            NoSuchElementException: If modal is not present in DOM
         """
         if not self.root_element:
-            raise NoSuchElementException("Modal is not present in DOM")
+            self.logger.debug("Cannot get dialog styles: root element is None")
 
-        return {
+        self.logger.debug("Getting dialog styles")
+        styles = {
             "width": self.get_computed_style(self.root_element, "width"),
             "height": self.get_computed_style(self.root_element, "height"),
             "backgroundColor": self.get_computed_style(self.root_element, "backgroundColor"),
@@ -166,3 +197,5 @@ class AddCupModal(BaseComponent):
             "borderWidth": self.get_computed_style(self.root_element, "borderWidth"),
             "padding": self.get_computed_style(self.root_element, "padding"),
         }
+
+        return styles
