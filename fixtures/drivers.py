@@ -5,8 +5,6 @@ from selenium.webdriver.ie.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 from config.resources import BASE_URL, IMPLICIT_WAIT
-from pages.cart_page import CartPage
-from pages.menu_page import MenuPage
 
 __all__ = ["driver"]
 

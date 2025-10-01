@@ -8,7 +8,6 @@ from selenium.webdriver.remote.webelement import WebElement
 
 __all__ = ["BasePage", "BaseComponent", "LocatorType", "DictLocatorType"]
 
-
 LocatorType = Tuple[ByType, str]
 DictLocatorType = Dict[str, LocatorType]
 
