@@ -112,12 +112,6 @@ class AddCupModal(BaseComponent):
         Returns:
             WebElement: The button element
         """
-        if not self.root_element:
-            self.logger.debug("Cannot get button: root element is None")
-
-        if not isinstance(button_type, ButtonType):
-            self.logger.debug(f"Invalid button type provided: {type(button_type)}")
-
         self.logger.debug(f"Getting {button_type.name} button")
         return self.root_element.find_element(By.XPATH, self.locators[button_type.value][1])
 
@@ -186,6 +180,7 @@ class AddCupModal(BaseComponent):
         """
         if not self.root_element:
             self.logger.debug("Cannot get dialog styles: root element is None")
+            return {}
 
         self.logger.debug("Getting dialog styles")
         styles = {
