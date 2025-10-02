@@ -60,7 +60,7 @@ class MenuPage(BasePage):
         cup.click()
         return self
 
-    def click_on_cup_by_order(self, order: int):
+    def click_on_cup_by_order(self, order: int) -> "MenuPage":
         """
         Click on cup with specific number on the page.
 
@@ -69,6 +69,7 @@ class MenuPage(BasePage):
         """
         cups = self.cups()
         cups[order - 1].click()
+        return self
 
     def promo(self) -> PromoComponent:
         """

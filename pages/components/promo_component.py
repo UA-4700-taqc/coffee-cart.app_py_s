@@ -9,14 +9,15 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.base import BaseComponent
 from pages.components.cup_component.cup_component import CupComponent
+from pages.components.cup_component.cup_component_promo import CupComponentPromo
 
 
 class PromoComponent(BaseComponent):
     """Component representing the promo offer with cup and buttons."""
 
     locators = {
-        "text": (By.XPATH, ".//span[@class='promo-text']"),
-        "cup": (By.XPATH, './/div[@class="cup-body"]'),
+        "text": (By.XPATH, ".//span"),
+        "cup": (By.XPATH, ".//div"),
         "yes_button": (By.XPATH, './/div[@class="buttons"]/button[1]'),
         "no_button": (By.XPATH, './/div[@class="buttons"]/button[2]'),
     }
@@ -29,9 +30,27 @@ class PromoComponent(BaseComponent):
         """Return the text of the promo offer."""
         return WebDriverWait(self.parent, 10).until(EC.presence_of_element_located(self.locators["text"])).text.strip()
 
-    def get_cup(self) -> WebElement:
+    def get_yes_button_text(self) -> str:
+        """Return the text of the Add button on the promo offer."""
+        return (
+            WebDriverWait(self.parent, 10)
+            .until(EC.presence_of_element_located(self.locators["yes_button"]))
+            .text.strip()
+        )
+
+    def get_no_button_text(self) -> str:
+        """Return the text of the Cancel button on the promo offer."""
+        return (
+            WebDriverWait(self.parent, 10)
+            .until(EC.presence_of_element_located(self.locators["no_button"]))
+            .text.strip()
+        )
+
+    def get_cup(self) -> "CupComponentPromo":
         """Return the cup component of the promo offer."""
-        return WebDriverWait(self.parent, 10).until(EC.presence_of_element_located(self.locators["cup"]))
+        return CupComponentPromo(
+            self, WebDriverWait(self.parent, 10).until(EC.visibility_of_element_located(self.locators["cup"]))
+        )
 
     def press_yes(self) -> "MenuPage":  # noqa: F821
         """Click on 'Yes, of course!' button."""
