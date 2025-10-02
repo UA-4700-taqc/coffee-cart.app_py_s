@@ -29,15 +29,15 @@ class StylesGetter:
             str: Computed style value
         """
         self.logger.debug(f"Getting computed style: {property_name}")
-        script = f"return window.getComputedStyle(arguments[0]).{property_name};"
-        return self.driver.execute_script(script, element)
+        script = "return window.getComputedStyle(arguments[0])[arguments[1]];"
+        return self.driver.execute_script(script, element, property_name)
 
     def get_styles(self, element: WebElement, properties: dict) -> dict:
         """Get multiple computed CSS styles for an element.
 
         Args:
             element: WebElement to check
-            properties: Dict of property names (camelCase) to retrieve
+            properties: Dict where keys are property names (camelCase) to retrieve
 
         Returns:
             dict: Dictionary of property names and their values
