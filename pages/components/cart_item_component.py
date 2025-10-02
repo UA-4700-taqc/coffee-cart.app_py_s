@@ -1,6 +1,6 @@
 """Module for CartItemComponent UI component."""
 from selenium.webdriver.common.by import By
-from selenium.webdriver.ie.webdriver import WebDriver
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from pages.base import BaseComponent

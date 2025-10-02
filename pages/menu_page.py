@@ -1,5 +1,5 @@
 """Menu page for coffee items."""
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -49,7 +49,7 @@ class MenuPage(BasePage):
             if cup.name == cup_name:
                 return cup
 
-    def click_on_cup_by_name(self, cup_name: str):
+    def click_on_cup_by_name(self, cup_name: str) -> "MenuPage":
         """
         Click on cup with specific name.
 
@@ -58,6 +58,7 @@ class MenuPage(BasePage):
         """
         cup = self.get_cup_by_name(cup_name)
         cup.click()
+        return self
 
     def click_on_cup_by_order(self, order: int):
         """
