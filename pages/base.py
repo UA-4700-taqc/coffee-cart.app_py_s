@@ -45,7 +45,7 @@ class Base:
 
         Args:
             element: WebElement to check
-            properties: Dict where keys are property names (camelCase) to retrieve
+            properties: Iterable of property names (camelCase) to retrieve
 
         Returns:
             dict: Dictionary of property names and their values
