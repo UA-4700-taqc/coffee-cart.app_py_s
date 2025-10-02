@@ -10,6 +10,7 @@ from utilities.logger import Logger
 
 __all__ = ["BasePage", "BaseComponent", "LocatorType", "DictLocatorType"]
 
+
 LocatorType = Tuple[ByType, str]
 DictLocatorType = Dict[str, LocatorType]
 
@@ -80,16 +81,23 @@ class BasePage(Base):
         header_we = self.driver.find_element(By.CSS_SELECTOR, "#app > ul")
         self._header: HeaderComponent = HeaderComponent(driver, header_we)
 
+    def get_header(self) -> "HeaderComponent":  # noqa=F821
+        """Return the Header component."""
+        from pages.components.header_component import HeaderComponent
+
+        header_we = self.driver.find_element(By.CSS_SELECTOR, "#app > ul")
+        return HeaderComponent(self.driver, header_we)
+
     def go_to_menu_page(self) -> "MenuPage":  # noqa=F821
         """Navigate to the Menu page and return its page object."""
-        self._header.click_menu()
+        self.get_header().click_menu()
         from pages.menu_page import MenuPage
 
         return MenuPage(self.driver)
 
     def go_to_cart_page(self) -> "CartPage":  # noqa=F821
         """Navigate to the Cart page and return its page object."""
-        self._header.click_cart()
+        self.get_header().click_cart()
         from pages.cart_page import CartPage
 
         return CartPage(self.driver)

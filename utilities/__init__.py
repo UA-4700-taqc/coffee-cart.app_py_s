@@ -1,5 +1,5 @@
 """Set Utilities package for test automation project."""
 
-from .logger import Logger, get_logger
+from .logger import Logger
 
-__all__ = ["Logger", "get_logger"]
+__all__ = ["Logger"]
