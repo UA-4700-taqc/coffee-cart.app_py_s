@@ -17,10 +17,7 @@ class CartItemComponent(BaseComponent):  # Успадкування від BaseC
         "quantity_plus_locator": (By.CSS_SELECTOR, "button[aria-label^='Add one']"),
         "quantity_minus_locator": (By.CSS_SELECTOR, "button[aria-label^='Remove one']"),
         "remove_locator": (By.CSS_SELECTOR, "button.delete"),
-        "name": (By.XPATH, ".//div"),
         "quantity": (By.XPATH, './/div/span[@class="unit-desc"]'),
-        "plus_button": (By.XPATH, ".//div/div[@class='unit-controller']/button[1]"),
-        "minus_button": (By.XPATH, ".//div/div[@class='unit-controller']/button[2]"),
     }
 
     def __init__(self, driver: WebDriver, parent: WebElement) -> None:
@@ -33,8 +30,11 @@ class CartItemComponent(BaseComponent):  # Успадкування від BaseC
         """
         super().__init__(driver, parent)
         self.driver = driver
-        self.name = self.find_element(self.locators["name"]).text
-        self.quantity: int = int(parent.find_element(*self.locators["quantity"]).text.split("x")[1].strip())
+
+    @property
+    def quantity(self) -> int:
+        """Return the current quantity of the item from DOM."""
+        return int(self.find_element(self.locators["quantity"]).text.split("x")[1].strip())
 
     def get_name(self) -> str:
         """Return the name of the product."""
@@ -43,25 +43,18 @@ class CartItemComponent(BaseComponent):  # Успадкування від BaseC
     def get_total_price(self) -> str:
         """Return the total price of the item."""
         price_text = self.find_element(self.locators["item_total_locator"]).text
-
         return price_text[1:]
 
-    def increase_quantity(self) -> None:
+    def increase_quantity(self) -> "CartItemComponent":
         """Click the '+' button to increase the item quantity."""
-        self.find_element(*self.locators["quantity_plus_locator"]).click()
+        self.find_element(self.locators["quantity_plus_locator"]).click()
+        return self
 
-    def decrease_quantity(self) -> None:
+    def decrease_quantity(self) -> "CartItemComponent":
         """Click the '-' button to decrease the item quantity."""
-        self.find_element(*self.locators["quantity_minus_locator"]).click()
+        self.find_element(self.locators["quantity_minus_locator"]).click()
+        return self
 
     def remove_item(self) -> None:
         """Click the 'x' button to remove the item from the cart."""
         self.find_element(*self.locators["remove_locator"]).click()
-
-    def increment_click(self) -> None:
-        """Click on the plus button to increase quantity."""
-        self.find_element(self.locators["plus_button"]).click()
-
-    def decrement_click(self) -> None:
-        """Click on the minus button to decrease quantity."""
-        self.find_element(self.locators["minus_button"]).click()
