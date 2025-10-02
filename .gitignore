@@ -213,3 +213,4 @@ __marimo__/
 allure-results
 allure-reports
 reports/
+.vscode/settings.json

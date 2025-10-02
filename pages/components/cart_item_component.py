@@ -1,11 +1,14 @@
 """Component model for a single item in the shopping cart."""
 from typing import Tuple
+
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
+
 from pages.base import BaseComponent
 
-class CartItemComponent(BaseComponent): # Успадкування від BaseComponent
+
+class CartItemComponent(BaseComponent):  # Успадкування від BaseComponent
     """Component representing a single product item within the cart list."""
 
     locators = {
@@ -15,7 +18,6 @@ class CartItemComponent(BaseComponent): # Успадкування від BaseCo
         "quantity_minus_locator": (By.CSS_SELECTOR, "button[aria-label^='Remove one']"),
         "remove_locator": (By.CSS_SELECTOR, "button.delete"),
     }
-
 
     def __init__(self, driver: WebDriver, parent: WebElement) -> None:
         """
@@ -28,14 +30,13 @@ class CartItemComponent(BaseComponent): # Успадкування від BaseCo
         super().__init__(driver, parent)
         self.driver = driver
 
-
     def get_name(self) -> str:
         """Return the name of the product."""
-        return self.find_element(*self.locators["name_locator"]).text
+        return self.find_element(self.locators["name_locator"]).text
 
     def get_total_price(self) -> str:
         """Return the total price of the item."""
-        price_text = self.find_element(*self.locators["item_total_locator"]).text
+        price_text = self.find_element(self.locators["item_total_locator"]).text
 
         return price_text[1:]
 
