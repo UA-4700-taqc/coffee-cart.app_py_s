@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from utilities.logger import Logger
+from utilities.styles_getter import StylesGetter
 
 from pages.base import BaseComponent
 
@@ -47,6 +48,8 @@ class AddCupModal(BaseComponent):
                 self.logger.debug("Modal root element not found for parent")
 
         super().__init__(driver, parent)
+        self.styles_getter = StylesGetter(self.driver)
+
         try:
             self.root_element = self.find_element(self.locators["ROOT"])
             self.logger.debug("Root element found")
@@ -155,22 +158,6 @@ class AddCupModal(BaseComponent):
 
         return self
 
-    def get_computed_style(self, element: WebElement, property_name: str) -> str:
-        """
-        Get computed CSS style value for an element.
-
-        Args:
-            element: WebElement to check
-            property_name: CSS property name (use camelCase format)
-
-        Returns:
-            str: Computed style value
-        """
-        self.logger.debug(f"Getting computed style: {property_name}")
-
-        script = f"return window.getComputedStyle(arguments[0]).{property_name};"
-        return self.driver.execute_script(script, element)
-
     def get_dialog_styles(self) -> dict:
         """
         Get all relevant CSS styles of the dialog.
@@ -182,15 +169,13 @@ class AddCupModal(BaseComponent):
             self.logger.debug("Cannot get dialog styles: root element is None")
             return {}
 
-        self.logger.debug("Getting dialog styles")
-        styles = {
-            "width": self.get_computed_style(self.root_element, "width"),
-            "height": self.get_computed_style(self.root_element, "height"),
-            "backgroundColor": self.get_computed_style(self.root_element, "backgroundColor"),
-            "color": self.get_computed_style(self.root_element, "color"),
-            "margin": self.get_computed_style(self.root_element, "margin"),
-            "borderWidth": self.get_computed_style(self.root_element, "borderWidth"),
-            "padding": self.get_computed_style(self.root_element, "padding"),
+        properties = {
+            "width": "width",
+            "height": "height",
+            "backgroundColor": "backgroundColor",
+            "color": "color",
+            "margin": "margin",
+            "borderWidth": "borderWidth",
+            "padding": "padding",
         }
-
-        return styles
+        return self.styles_getter.get_styles(self.root_element, properties)
