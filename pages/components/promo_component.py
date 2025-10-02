@@ -33,9 +33,12 @@ class PromoComponent(BaseComponent):
         """Return the cup component of the promo offer."""
         return WebDriverWait(self.parent, 10).until(EC.presence_of_element_located(self.locators["cup"]))
 
-    def press_yes(self) -> None:
+    def press_yes(self) -> "MenuPage":  # noqa: F821
         """Click on 'Yes, of course!' button."""
+        from pages.menu_page import MenuPage
+
         self.find_element(self.locators["yes_button"]).click()
+        return MenuPage(self.driver)
 
     def press_no(self) -> None:
         """Click on 'Nah, I'll skip.' button."""
