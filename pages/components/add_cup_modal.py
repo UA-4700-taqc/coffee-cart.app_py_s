@@ -7,7 +7,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from utilities.logger import Logger
-from utilities.styles_getter import StylesGetter
 
 from pages.base import BaseComponent
 
@@ -48,7 +47,6 @@ class AddCupModal(BaseComponent):
                 self.logger.debug("Modal root element not found for parent")
 
         super().__init__(driver, parent)
-        self.styles_getter = StylesGetter(self.driver)
 
         try:
             self.root_element = self.find_element(self.locators["ROOT"])
@@ -178,4 +176,4 @@ class AddCupModal(BaseComponent):
             "borderWidth": "borderWidth",
             "padding": "padding",
         }
-        return self.styles_getter.get_styles(self.root_element, properties)
+        return self.get_styles(self.root_element, properties)
