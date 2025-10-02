@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from utilities.logger import Logger
+from utilities.styles_getter import StylesGetter
 
 from pages.base import BaseComponent
 from pages.components.pay_component.pay_preview_item_component import PayPreviewItemComponent
@@ -33,6 +34,7 @@ class PayPreviewComponent(BaseComponent):
         self.logger.debug("Initializing PayPreviewComponent")
 
         super().__init__(driver, parent)
+        self.styles_getter = StylesGetter(self.driver)
 
         try:
             self.root_element = self.find_element(self.locators["ROOT_PREVIEW"])
@@ -103,25 +105,6 @@ class PayPreviewComponent(BaseComponent):
         self.logger.debug(f"Item count: {count}")
         return count
 
-        # TODO: create utility method to get computed style of an element
-
-    def get_computed_style(self, element: WebElement, property_name: str) -> str:
-        """Get computed CSS style value for an element.
-
-        Args:
-            element: WebElement to check
-            property_name: CSS property name (use camelCase format)
-
-        Returns:
-            str: Computed style value
-        """
-        self.logger.debug(f"Getting computed style: {property_name}")
-
-        script = f"return window.getComputedStyle(arguments[0]).{property_name};"
-        return self.driver.execute_script(script, element)
-
-        # TODO: create method to get all relevant styles of the cart preview
-
     def get_preview_styles(self) -> dict:
         """Get all relevant CSS styles of the cart preview.
 
@@ -132,15 +115,12 @@ class PayPreviewComponent(BaseComponent):
             self.logger.debug("Cannot get preview styles: root element is None")
             return {}
 
-        self.logger.debug("Getting cart preview styles")
-        styles = {
-            "padding": self.get_computed_style(self.root_element, "padding"),
-            "background": self.get_computed_style(self.root_element, "background"),
-            "marginBottom": self.get_computed_style(self.root_element, "marginBottom"),
-            "border": self.get_computed_style(self.root_element, "border"),
-            "listStyle": self.get_computed_style(self.root_element, "listStyle"),
-            "minWidth": self.get_computed_style(self.root_element, "minWidth"),
+        properties = {
+            "padding": "padding",
+            "background": "background",
+            "marginBottom": "marginBottom",
+            "border": "border",
+            "listStyle": "listStyle",
+            "minWidth": "minWidth",
         }
-
-        self.logger.debug(f"Cart preview styles retrieved: {styles}")
-        return styles
+        return self.styles_getter.get_styles(self.root_element, properties)
