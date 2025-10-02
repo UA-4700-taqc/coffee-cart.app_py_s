@@ -12,5 +12,5 @@ def test_add_promo_drink_to_cart(driver_menu_page):
         .press_yes()
         .go_to_cart_page()
     )
-    item_names = [item.name for item in cart_page.items()]
+    item_names = [item.get_name() for item in cart_page.items()]
     assert "(Discounted) Mocha" in item_names
