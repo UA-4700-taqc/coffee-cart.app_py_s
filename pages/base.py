@@ -18,13 +18,13 @@ class Base:
     """Utility class for CSS style-related operations."""
 
     def __init__(self, driver: WebDriver):
-        """Initialize StylesGetter with a WebDriver instance.
+        """Initialize Base with a WebDriver instance.
 
         Args:
             driver: Selenium WebDriver instance.
         """
         self.driver = driver
-        self.logger = Logger.get_logger("StylesGetter")
+        self.logger = Logger.get_logger("Base")
 
     def _get_computed_style(self, element: WebElement, property_name: str) -> str:
         """Get computed CSS style value for an element.
