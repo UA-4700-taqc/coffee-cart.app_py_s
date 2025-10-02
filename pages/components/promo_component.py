@@ -4,6 +4,8 @@ from typing import Any
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.base import BaseComponent
 from pages.components.cup_component.cup_component import CupComponent
@@ -22,13 +24,22 @@ class PromoComponent(BaseComponent):
     def __init__(self, driver: WebDriver, parent: WebElement) -> None:
         """Initialize the component."""
         super().__init__(driver, parent)
-        self.text: str = parent.find_element(*self.locators["text"]).text.strip()
-        self.cup: CupComponent = CupComponent(driver, parent.find_element(*self.locators["cup"]))
 
-    def press_yes(self) -> None:
+    def get_text(self) -> str:
+        """Return the text of the promo offer."""
+        return WebDriverWait(self.parent, 10).until(EC.presence_of_element_located(self.locators["text"])).text.strip()
+
+    def get_cup(self) -> WebElement:
+        """Return the cup component of the promo offer."""
+        return WebDriverWait(self.parent, 10).until(EC.presence_of_element_located(self.locators["cup"]))
+
+    def press_yes(self) -> "MenuPage":  # noqa: F821
         """Click on 'Yes, of course!' button."""
-        self.find_element(*self.locators["yes_button"]).click()
+        from pages.menu_page import MenuPage
+
+        self.find_element(self.locators["yes_button"]).click()
+        return MenuPage(self.driver)
 
     def press_no(self) -> None:
         """Click on 'Nah, I'll skip.' button."""
-        self.find_element(*self.locators["no_button"]).click()
+        self.find_element(self.locators["no_button"]).click()
