@@ -76,7 +76,7 @@ class BasePage(Base):
         """
         from pages.components.header_component import HeaderComponent
 
-        self.driver = driver
+        super().__init__(driver)
         header_we = self.driver.find_element(By.CSS_SELECTOR, "#app > ul")
         self._header: HeaderComponent = HeaderComponent(driver, header_we)
 
@@ -137,8 +137,8 @@ class BaseComponent(Base):
             driver: Selenium WebDriver instance.
             parent: Parent page or component.
         """
+        super().__init__(driver)
         self.parent = parent
-        self.driver = driver
 
     def find_element(self, locator: LocatorType) -> WebElement:
         """
