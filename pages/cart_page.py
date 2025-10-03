@@ -2,6 +2,7 @@
 
 from typing import List
 
+from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -18,6 +19,7 @@ class CartPage(BasePage):
         "cart_root": (By.CSS_SELECTOR, "div.list"),
         "items": (By.CSS_SELECTOR, "div.list ul:not(.cart-preview) > li.list-item"),
         "pay_container": (By.CSS_SELECTOR, "div.pay-container"),
+        "empty_cart": (By.XPATH, "//p[text()='No coffee, go add some.']"),
     }
 
     def __init__(self, driver: WebDriver) -> None:
@@ -44,3 +46,23 @@ class CartPage(BasePage):
         root = self._root()
         pay_element = root.find_element(*self.locators["pay_container"])
         return PayComponent(self.driver, pay_element)
+
+    def clear_cart(self) -> "CartPage":
+        """Delete all cart elements if there are any."""
+        for item in self.items():
+            item.remove_item()
+        return self
+
+    def get_empty_cart_we(self) -> WebElement | None:
+        """Return empty cart web element if found or None."""
+        try:
+            return self.find_element(self.locators["empty_cart"])
+        except NoSuchElementException:
+            return None
+
+    def is_empty_cart_displayed(self) -> bool:
+        """Return True if empty cart web element is displayed."""
+        if self.get_empty_cart_we():
+            if self.get_empty_cart_we().is_displayed():
+                return True
+        return False
