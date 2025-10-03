@@ -1,7 +1,7 @@
 """Fixture for WebDriver instance."""
 import pytest
 from selenium import webdriver
-from selenium.webdriver.ie.service import Service
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 from config.resources import BASE_URL, IMPLICIT_WAIT
@@ -11,7 +11,7 @@ from pages.menu_page import MenuPage
 __all__ = ["driver", "driver_menu_page", "driver_cart_page"]
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def driver():
     """Fixture to initialize and quit the WebDriver instance."""
     service = Service(ChromeDriverManager().install())

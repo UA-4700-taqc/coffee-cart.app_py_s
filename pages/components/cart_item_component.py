@@ -2,16 +2,16 @@
 from typing import Tuple
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.ie.webdriver import WebDriver
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
-from pages.base import BaseComponent
+from pages.base import BaseComponent, DictLocatorType
 
 
 class CartItemComponent(BaseComponent):  # Успадкування від BaseComponent
     """Component representing a single product item within the cart list."""
 
-    locators = {
+    locators: DictLocatorType = {
         "name_locator": (By.CSS_SELECTOR, "div:nth-child(1)"),
         "item_total_locator": (By.XPATH, "./div[3]"),
         "quantity_plus_locator": (By.CSS_SELECTOR, "button[aria-label^='Add one']"),
@@ -62,4 +62,4 @@ class CartItemComponent(BaseComponent):  # Успадкування від BaseC
 
     def remove_item(self) -> None:
         """Click the 'x' button to remove the item from the cart."""
-        self.find_element(*self.locators["remove_locator"]).click()
+        self.find_element(self.locators["remove_locator"]).click()
