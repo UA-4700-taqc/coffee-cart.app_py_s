@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
-from pages.base import BasePage
+from pages.base import BasePage, DictLocatorType
 from pages.components.cart_item_component import CartItemComponent
 from pages.components.pay_component.pay_component import PayComponent
 
@@ -14,7 +14,7 @@ from pages.components.pay_component.pay_component import PayComponent
 class CartPage(BasePage):
     """Cart page object."""
 
-    locators = {
+    locators: DictLocatorType = {
         "cart_root": (By.CSS_SELECTOR, "div.list"),
         "items": (By.CSS_SELECTOR, "div.list ul:not(.cart-preview) > li.list-item"),
         "pay_container": (By.CSS_SELECTOR, "div.pay-container"),

@@ -6,9 +6,9 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
-from utilities.logger import Logger
 
-from pages.base import BaseComponent
+from pages.base import BaseComponent, DictLocatorType
+from pages.menu_page import MenuPage
 
 
 class ButtonType(Enum):
@@ -21,7 +21,7 @@ class ButtonType(Enum):
 class AddCupModal(BaseComponent):
     """AddCupModal class for modal functionality."""
 
-    locators = {
+    locators: DictLocatorType = {
         "ROOT": (By.XPATH, "//dialog[@data-cy='add-to-cart-modal']"),
         "MESSAGE": (By.XPATH, ".//p"),
         "PRODUCT_NAME": (By.XPATH, ".//p/strong"),
@@ -30,140 +30,102 @@ class AddCupModal(BaseComponent):
     }
 
     def __init__(self, driver: WebDriver, parent: WebElement = None):
-        """Initialize the AddCupModal.
+        """Initialize AddCupModal.
 
         Args:
-            driver: Selenium WebDriver instance.
-            parent: Parent element containing the modal. If None, the body element is used.
+            driver (WebDriver): Selenium WebDriver instance.
+            parent (WebElement, optional): Parent element containing the modal.
         """
-        self.logger = Logger.get_logger("AddCupModal")
-        self.logger.debug("Initializing AddCupModal component")
-
         if parent is None:
             try:
-                parent = driver.find_element(*self.locators["ROOT"])
+                parent = self.find_element(self.locators["ROOT"])
                 self.logger.debug("Found modal root element for parent")
             except NoSuchElementException:
                 self.logger.debug("Modal root element not found for parent")
-
         super().__init__(driver, parent)
-
-        try:
-            self.root_element = self.find_element(self.locators["ROOT"])
-            self.logger.debug("Root element found")
-        except NoSuchElementException:
-            self.logger.debug("Root element not found")
-            self.root_element = None
+        self.logger.debug("Initializing AddCupModal component")
 
     def is_open(self) -> bool:
-        """Return True if the dialog is displayed and has the 'open' attribute."""
-        if not self.root_element:
+        """Check if the dialog is open.
+
+        Returns:
+            bool: True if the dialog is displayed and has the 'open' attribute.
+        """
+        if not self.parent:
             self.logger.debug("Modal not open: root element is None")
             return False
 
-        is_displayed = self.root_element.is_displayed()
-        has_open_attr = self.root_element.get_attribute("open") is not None
+        is_displayed = self.parent.is_displayed()
+        has_open_attr = self.parent.get_attribute("open") is not None
         is_open = is_displayed and has_open_attr
 
         self.logger.debug(f"Modal open status: {is_open}")
         return is_open
 
     def get_message_text(self) -> str:
-        """Return the full dialog message text.
+        """Get the full dialog message text.
 
         Returns:
-            str: The message text or empty string if element not found.
+            str: Message text, or empty string if not found.
         """
-        if not self.root_element:
-            self.logger.debug("Cannot get message: root element is None")
-            return ""
-
-        try:
-            message = self.root_element.find_element(By.XPATH, self.locators["MESSAGE"][1]).text
-            self.logger.debug(f"Found message text: '{message}'")
-            return message
-        except NoSuchElementException:
-            self.logger.debug("Message element not found")
-            return ""
+        message = self.parent.find_element(By.XPATH, self.locators["MESSAGE"][1]).text
+        self.logger.debug(f"Found message text: '{message}'")
+        return message
 
     def get_product_name(self) -> str:
-        """Return only the product name from the dialog.
+        """Get the product name from the dialog.
 
         Returns:
-            str: The product name or empty string if element not found.
+            str: Product name, or empty string if not found.
         """
-        if not self.root_element:
-            self.logger.debug("Cannot get product name: root element is None")
-            return ""
-
-        try:
-            product_name = self.root_element.find_element(By.XPATH, self.locators["PRODUCT_NAME"][1]).text
-            self.logger.debug(f"Found product name: '{product_name}'")
-            return product_name
-        except NoSuchElementException:
-            self.logger.debug("Product name element not found")
-            return ""
+        product_name = self.parent.find_element(By.XPATH, self.locators["PRODUCT_NAME"][1]).text
+        self.logger.debug(f"Found product name: '{product_name}'")
+        return product_name
 
     def _get_button_element(self, button_type: ButtonType) -> WebElement:
-        """Implement a helper method to get a button element.
+        """Get a button element by type.
 
         Args:
-            button_type: Type of button to retrieve
+            button_type (ButtonType): Type of button to retrieve.
 
         Returns:
-            WebElement: The button element
+            WebElement: The button element.
         """
         self.logger.debug(f"Getting {button_type.name} button")
-        return self.root_element.find_element(By.XPATH, self.locators[button_type.value][1])
+        return self.parent.find_element(By.XPATH, self.locators[button_type.value][1])
 
-    def confirm(self) -> "AddCupModal":
-        """
-        Click 'Yes' button to add item to cart.
+    def confirm(self) -> MenuPage:
+        """Click 'Yes' to add item to cart.
 
         Returns:
-            AddCupModal: Self reference for method chaining.
+            MenuPage: The menu page after confirming.
         """
         self.logger.debug("Attempting to confirm modal")
 
-        if self.root_element:
-            try:
-                self._get_button_element(ButtonType.YES).click()
-                self.logger.debug("Modal confirmed")
-            except NoSuchElementException:
-                self.logger.debug("Yes button not found")
-        else:
-            self.logger.debug("Cannot confirm: root element is None")
+        self._get_button_element(ButtonType.YES).click()
+        self.logger.debug("Modal confirmed")
+        return MenuPage(driver=self.driver)
 
-        return self
-
-    def cancel(self) -> "AddCupModal":
-        """
-        Click 'No' button to dismiss the modal.
+    def cancel(self) -> MenuPage:
+        """Click 'No' to dismiss the modal.
 
         Returns:
-            AddCupModal: Self reference for method chaining.
+            MenuPage: The menu page after canceling.
         """
         self.logger.debug("Attempting to cancel modal")
 
-        if self.root_element:
-            try:
-                self._get_button_element(ButtonType.NO).click()
-                self.logger.debug("Modal canceled")
-            except NoSuchElementException:
-                self.logger.debug("No button not found")
-        else:
-            self.logger.debug("Cannot cancel: root element is None")
+        self._get_button_element(ButtonType.NO).click()
+        self.logger.debug("Modal canceled")
 
-        return self
+        return MenuPage(driver=self.driver)
 
     def get_dialog_styles(self) -> dict:
-        """
-        Get all relevant CSS styles of the dialog.
+        """Get CSS styles of the dialog.
 
         Returns:
-            dict: Dictionary of CSS properties and their values
+            dict: CSS properties and their values.
         """
-        if not self.root_element:
+        if not self.parent:
             self.logger.debug("Cannot get dialog styles: root element is None")
             return {}
 
@@ -176,4 +138,4 @@ class AddCupModal(BaseComponent):
             "borderWidth": "borderWidth",
             "padding": "padding",
         }
-        return self.get_styles(self.root_element, properties)
+        return self.get_styles(self.parent, properties)
