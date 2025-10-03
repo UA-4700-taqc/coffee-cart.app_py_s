@@ -11,7 +11,6 @@ from utilities.logger import Logger
 
 __all__ = ["BasePage", "BaseComponent", "LocatorType", "DictLocatorType"]
 
-
 LocatorType = Tuple[ByType, str]
 DictLocatorType = Dict[str, LocatorType]
 
