@@ -4,16 +4,15 @@ from selenium.common.exceptions import NoSuchElementException, StaleElementRefer
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
-from utilities.logger import Logger
 
-from pages.base import BaseComponent
+from pages.base import BaseComponent, DictLocatorType
 from pages.components.pay_component.pay_preview_item_component import PayPreviewItemComponent
 
 
 class PayPreviewComponent(BaseComponent):
     """Empty PayPreviewComponent class for payment preview logic."""
 
-    locators = {
+    locators: DictLocatorType = {
         "ROOT_PREVIEW": (By.XPATH, "//ul[contains(@class, 'cart-preview')]"),
         "VISIBLE_ROOT_PREVIEW": (
             By.XPATH,
@@ -26,20 +25,13 @@ class PayPreviewComponent(BaseComponent):
         """Initialize the PayPreviewComponent.
 
         Args:
-            driver: Selenium WebDriver instance.
-            parent: Parent element (button) that triggers the preview on hover.
+            driver (WebDriver): Selenium WebDriver instance.
+            parent (WebElement, optional): Parent element that triggers the preview on hover.
         """
-        self.logger = Logger.get_logger("PayPreviewComponent")
+        super().__init__(driver, parent)
         self.logger.debug("Initializing PayPreviewComponent")
 
-        super().__init__(driver, parent)
-
-        try:
-            self.root_element = self.find_element(self.locators["ROOT_PREVIEW"])
-            self.logger.debug("Root preview element found")
-        except NoSuchElementException:
-            self.logger.error("Root preview element not found - component may not function correctly")
-            self.root_element = None
+        self.parent = self.find_element(self.locators["ROOT_PREVIEW"])
 
     def is_visible(self) -> bool:
         """Check if the cart preview is visible (has the 'show' class).
@@ -49,18 +41,14 @@ class PayPreviewComponent(BaseComponent):
         """
         self.logger.debug("Checking if preview is visible")
 
-        if not self.root_element:
+        if not self.parent:
             self.logger.debug("Preview not visible: root element is None")
             return False
 
-        try:
-            visible_preview = self.find_element(self.locators["VISIBLE_ROOT_PREVIEW"])
-            result = visible_preview is not None
-            self.logger.debug(f"Preview visibility check result: {result}")
-            return result
-        except NoSuchElementException:
-            self.logger.debug("Preview not visible: no element with 'show' class")
-            return False
+        visible_preview = self.find_element(self.locators["VISIBLE_ROOT_PREVIEW"])
+        result = visible_preview is not None
+        self.logger.debug(f"Preview visibility check result: {result}")
+        return result
 
     def get_items(self) -> list:
         """Get all items in the cart preview.
@@ -70,25 +58,17 @@ class PayPreviewComponent(BaseComponent):
         """
         self.logger.debug("Getting preview items")
 
-        if not self.is_visible():
-            self.logger.debug("Cannot get items: preview is not visible")
-            return []
+        item_elements = self.find_elements(self.locators["ITEMS"])
+        items_list = []
 
-        try:
-            item_elements = self.find_elements(self.locators["ITEMS"])
-            items_list = []
+        for item in item_elements:
+            try:
+                items_list.append(PayPreviewItemComponent(self.driver, item))
+            except StaleElementReferenceException:
+                self.logger.debug("Skipping stale item element in preview")
 
-            for item in item_elements:
-                try:
-                    items_list.append(PayPreviewItemComponent(self.driver, item))
-                except StaleElementReferenceException:
-                    self.logger.debug("Skipping stale item element in preview")
-
-            self.logger.debug(f"Found {len(items_list)} items in preview")
-            return items_list
-        except StaleElementReferenceException:
-            self.logger.warning("Root element became stale when finding preview items")
-            return []
+        self.logger.debug(f"Found {len(items_list)} items in preview")
+        return items_list
 
     def get_item_count(self) -> int:
         """Get the number of items in the cart preview.
@@ -109,7 +89,7 @@ class PayPreviewComponent(BaseComponent):
         Returns:
             dict: Dictionary of CSS properties and their values
         """
-        if not self.root_element:
+        if not self.parent:
             self.logger.debug("Cannot get preview styles: root element is None")
             return {}
 
@@ -121,4 +101,4 @@ class PayPreviewComponent(BaseComponent):
             "listStyle": "listStyle",
             "minWidth": "minWidth",
         }
-        return self.get_styles(self.root_element, properties)
+        return self.get_styles(self.parent, properties)
