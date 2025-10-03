@@ -1,5 +1,6 @@
 """Base classes for page objects and components using Selenium WebDriver."""
 
+import re
 from typing import Dict, List, Tuple
 
 from selenium.webdriver.common.by import By, ByType
@@ -9,7 +10,6 @@ from selenium.webdriver.remote.webelement import WebElement
 from utilities.logger import Logger
 
 __all__ = ["BasePage", "BaseComponent", "LocatorType", "DictLocatorType"]
-
 
 LocatorType = Tuple[ByType, str]
 DictLocatorType = Dict[str, LocatorType]
@@ -25,7 +25,7 @@ class Base:
             driver: Selenium WebDriver instance.
         """
         self.driver = driver
-        self.logger = Logger.get_logger("Base")
+        self.logger = Logger.get_logger(self.__class__.__name__)
 
     def _get_computed_style(self, element: WebElement, property_name: str) -> str:
         """Get computed CSS style value for an element.
@@ -61,6 +61,23 @@ class Base:
             styles[prop] = self._get_computed_style(element, prop)
         self.logger.debug(f"Styles retrieved: {styles}")
         return styles
+
+    def _parse_height(self, style: str) -> float:
+        """Extract the height percentage from a style string using regex."""
+        match = re.search(r"height:\s*(\d+(?:\.\d+)?)%", style)
+        if match:
+            return float(match.group(1))
+        return 0.0
+
+    def get_height_percent(self, element: WebElement) -> float:
+        """Return the height percentage of an element from its style."""
+        style = element.get_attribute("style") or ""
+        return self._parse_height(style)
+
+    def get_classes(self, element: WebElement) -> List[str]:
+        """Return list of CSS classes from an element."""
+        class_attr = element.get_attribute("class") or ""
+        return class_attr.split()
 
 
 class BasePage(Base):
@@ -171,3 +188,15 @@ class BaseComponent(Base):
             list: List of found WebElements.
         """
         return self.parent.find_elements(*locator)
+
+    def _get_height_style(self) -> str:
+        """Return the raw style attribute from this component's parent."""
+        return self.parent.get_attribute("style") or ""
+
+    def _get_height_percent(self) -> float:
+        """Return height percentage of this component."""
+        return super().get_height_percent(self.parent)
+
+    def _get_classes(self) -> List[str]:
+        """Return CSS classes applied to this component."""
+        return super().get_classes(self.parent)
