@@ -26,7 +26,7 @@ class Base:
             driver: Selenium WebDriver instance.
         """
         self.driver = driver
-        self.logger = Logger.get_logger("Base")
+        self.logger = Logger.get_logger(self.__class__.__name__)
 
     def _get_computed_style(self, element: WebElement, property_name: str) -> str:
         """Get computed CSS style value for an element.
