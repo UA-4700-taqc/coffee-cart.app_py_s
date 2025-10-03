@@ -1,7 +1,7 @@
 """Fixture for WebDriver instance."""
 import pytest
 from selenium import webdriver
-from selenium.webdriver.ie.service import Service
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 from config.resources import BASE_URL, IMPLICIT_WAIT
