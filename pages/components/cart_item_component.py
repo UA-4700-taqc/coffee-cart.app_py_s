@@ -36,14 +36,19 @@ class CartItemComponent(BaseComponent):  # Успадкування від BaseC
         """Return the current quantity of the item from DOM."""
         return int(self.find_element(self.locators["quantity"]).text.split("x")[1].strip())
 
+    @property
+    def price(self) -> float:
+        """Return the current price of the item from DOM."""
+        return float(self.find_element(self.locators["quantity"]).text.split("x")[0].strip().replace("$", ""))
+
     def get_name(self) -> str:
         """Return the name of the product."""
         return self.find_element(self.locators["name_locator"]).text
 
-    def get_total_price(self) -> str:
+    def get_total_price(self) -> float:
         """Return the total price of the item."""
         price_text = self.find_element(self.locators["item_total_locator"]).text
-        return price_text[1:]
+        return float(price_text[1:])
 
     def increase_quantity(self) -> "CartItemComponent":
         """Click the '+' button to increase the item quantity."""
