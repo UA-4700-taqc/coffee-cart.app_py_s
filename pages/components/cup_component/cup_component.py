@@ -17,7 +17,7 @@ class CupComponent(BaseComponent):
         "name": (By.XPATH, ".//h4"),
         "price": (By.XPATH, ".//h4/small"),
         "body": (By.CLASS_NAME, "cup"),
-        "ingredients": (By.CSS_SELECTOR, ".ingredients li"),
+        "ingredients": (By.CLASS_NAME, "ingredient")
     }
 
     def __init__(self, driver: WebDriver, parent: WebElement) -> None:
@@ -36,8 +36,20 @@ class CupComponent(BaseComponent):
 
     def get_ingredients(self) -> List[IngredientComponent]:
         """Return list of ingredient components for this cup."""
-        elements = self.find_elements(self.locators["body"])
-        return [IngredientComponent(self.driver, el) for el in elements]
+        ingredient_elements = self.find_elements(self.locators["ingredients"])
+        return [IngredientComponent(self.driver, el) for el in ingredient_elements]
+
+    def get_ingredients_text(self) -> List[str]:
+        """Return a list of ingredient names from the displayed order (UI)."""
+        ingredients_elements = self.find_elements(self.locators["ingredients"])
+
+        # Collect the text of each ingredient
+        ingredient_texts = [ingredient.text.strip() for ingredient in ingredients_elements]
+
+        # Reverse the list if ingredients are displayed bottom to top
+        ingredient_texts.reverse()
+
+        return ingredient_texts
 
     def click(self):
         """Click on cup's body."""
