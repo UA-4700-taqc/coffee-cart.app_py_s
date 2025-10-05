@@ -39,6 +39,11 @@ class CupComponent(BaseComponent):
         elements = self.find_elements(self.locators["body"])
         return [IngredientComponent(self.driver, el) for el in elements]
 
+    def get_price(self) -> float:
+        """Return the price of the cup as a float."""
+        price_text = self.price.replace('$', '').strip()
+        return float(price_text)
+
     def click(self):
         """Click on cup's body."""
         self.body.click()
