@@ -1,13 +1,16 @@
 """Implement UI component for the Add Cup Modal dialog."""
 
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from pages.base import BaseComponent, DictLocatorType
-from pages.menu_page import MenuPage
+
+if TYPE_CHECKING:
+    from pages.menu_page import MenuPage
 
 
 class ButtonType(Enum):
@@ -89,24 +92,28 @@ class AddCupModal(BaseComponent):
         self.logger.debug(f"Getting {button_type.name} button")
         return self.parent.find_element(By.XPATH, self.locators[button_type.value][1])
 
-    def confirm(self) -> MenuPage:
+    def confirm(self) -> "MenuPage":
         """Click 'Yes' to add item to cart.
 
         Returns:
             MenuPage: The menu page after confirming.
         """
+        from pages.menu_page import MenuPage
+
         self.logger.debug("Attempting to confirm modal")
 
         self._get_button_element(ButtonType.YES).click()
         self.logger.debug("Modal confirmed")
         return MenuPage(driver=self.driver)
 
-    def cancel(self) -> MenuPage:
+    def cancel(self) -> "MenuPage":
         """Click 'No' to dismiss the modal.
 
         Returns:
             MenuPage: The menu page after canceling.
         """
+        from pages.menu_page import MenuPage
+
         self.logger.debug("Attempting to cancel modal")
 
         self._get_button_element(ButtonType.NO).click()
