@@ -8,6 +8,7 @@ from config.resources import BASE_URL, IMPLICIT_WAIT
 from pages.cart_page import CartPage
 from pages.menu_page import MenuPage
 
+
 __all__ = ["driver", "driver_menu_page", "driver_cart_page"]
 
 

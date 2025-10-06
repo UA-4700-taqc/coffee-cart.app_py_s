@@ -6,6 +6,8 @@ from typing import Dict, List, Tuple
 from selenium.webdriver.common.by import By, ByType
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from utilities.logger import Logger
 
@@ -149,6 +151,24 @@ class BasePage(Base):
             list: List of found WebElements.
         """
         return self.driver.find_elements(*locator)
+
+    def wait_for_element_and_click(self, locator: Tuple[str, str], timeout: int = 10) -> WebElement:
+        """
+        Wait for the element to become clickable, clicks it, and returns the element
+        """
+        element = WebDriverWait(self.driver, timeout).until(
+            EC.element_to_be_clickable(locator)
+        )
+        element.click()
+        return element
+
+    def wait_for_presence_and_get_element(self, locator: Tuple[str, str], timeout: int = 5) -> WebElement:
+        """
+        Wait for the element to appear in the DOM
+        """
+        return WebDriverWait(self.driver, timeout).until(
+            EC.presence_of_element_located(locator)
+        )
 
 
 class BaseComponent(Base):
