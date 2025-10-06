@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 
 from pages.base import BasePage, DictLocatorType
 from pages.components.cup_component.cup_component import CupComponent
@@ -80,3 +81,17 @@ class MenuPage(BasePage):
         """
         promo = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(self.locators["promo"]))
         return PromoComponent(self.driver, promo)
+
+
+
+    def is_promo_displayed(self, timeout: int = 5) -> bool:
+        """
+       Check if the promo element is visible
+        """
+        try:
+            WebDriverWait(self.driver, timeout).until(
+                EC.visibility_of_element_located(self.locators["promo"])
+            )
+            return True
+        except TimeoutException:
+            return False
