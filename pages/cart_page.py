@@ -88,7 +88,7 @@ class CartPage(BasePage):
         """
         return self.pay().get_total_price()
 
-    def open_cart(self) :  # Важливий type hint
+    def open_cart(self) :
         """
         Clicks the cart icon/Total button in the header to open the cart (Step 2).
         """
