@@ -62,10 +62,8 @@ class MenuPage(BasePage):
     def open_cart(self) -> CartPage:
         """Clicks the cart icon/Total button and returns the CartPage object."""
 
-        # 1. Чекаємо і клікаємо кнопку кошика
         cart_button = self.wait_for_element_and_click(self.locators["open_cart_button"])
 
-        # 2. ПОВЕРТАЄМО об'єкт CartPage
         return CartPage(self.driver)
 
 

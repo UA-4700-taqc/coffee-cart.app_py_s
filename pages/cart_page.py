@@ -92,5 +92,5 @@ class CartPage(BasePage):
         """
         Clicks the cart icon/Total button in the header to open the cart (Step 2).
         """
-        self.go_to_cart_page()  # Припускаємо, що BasePage.go_to_cart_page() виконує клік
+        self.go_to_cart_page()
         return CartPage(self.driver)

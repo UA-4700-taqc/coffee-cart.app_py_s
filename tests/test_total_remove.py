@@ -27,7 +27,6 @@ def test_product_add_and_removal_flow(driver_menu_page: MenuPage):
     print(f"\n--- Starting Cart Removal Test with {PRODUCTS_TO_ADD} products ---")
 
     menu_page.add_products_to_cart(count=PRODUCTS_TO_ADD)
-    #time.sleep(1)
 
     print("PASS: Step 1. Products added. Moving to cart.")
 
