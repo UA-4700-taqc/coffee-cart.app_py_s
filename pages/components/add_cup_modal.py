@@ -137,3 +137,39 @@ class AddCupModal(BaseComponent):
             "padding": "padding",
         }
         return self.get_styles(self.parent, properties)
+
+    def get_yes_button_styles(self) -> dict:
+        """Get CSS styles of Yes button.
+
+        Returns:
+            dict: CSS properties and their values.
+        """
+        properties = {
+            "cursor": "cursor",
+            "backgroundColor": "background-color",
+            "color": "color",
+            "borderRadius": "border-radius",
+            "padding": "padding",
+        }
+        yes_button = self._get_button_element(ButtonType.YES)
+        styles = self.get_styles(yes_button, properties)
+        self.logger.debug(f"Yes button styles: {styles}")
+        return styles
+
+    def get_no_button_styles(self) -> dict:
+        """Get CSS styles of No button.
+
+        Returns:
+            dict: CSS properties and their values.
+        """
+        properties = {
+            "cursor": "cursor",
+            "backgroundColor": "background-color",
+            "color": "color",
+            "borderRadius": "border-radius",
+            "padding": "padding",
+        }
+        no_button = self._get_button_element(ButtonType.NO)
+        styles = self.get_styles(no_button, properties)
+        self.logger.debug(f"No button styles: {styles}")
+        return styles
