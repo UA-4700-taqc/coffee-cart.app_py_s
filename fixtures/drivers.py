@@ -14,7 +14,7 @@ __all__ = ["driver", "driver_menu_page", "driver_cart_page"]
 @pytest.fixture(scope="session")
 def driver():
     """Fixture to initialize and quit the WebDriver instance."""
-    service = Service(ChromeDriverManager().install())
+    service = Service(ChromeDriverManager(driver_version="140.0.7339.207").install())
     chrome_options = webdriver.ChromeOptions()
     driver = webdriver.Chrome(service=service, options=chrome_options)
     driver.implicitly_wait(IMPLICIT_WAIT)
