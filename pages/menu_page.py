@@ -15,8 +15,14 @@ from pages.components.promo_component import PromoComponent
 class MenuPage(BasePage):
     """Coffee menu page."""
 
-    locators: DictLocatorType = {"cups": (By.XPATH, "//li/h4/.."), "promo": (By.CLASS_NAME, "promo")}
-
+    locators: DictLocatorType = {
+        "cups": (By.XPATH, "//li/h4/.."),
+        "promo": (By.CLASS_NAME, "promo"),
+        "add_to_cart_buttons": (By.CSS_SELECTOR, "li .add-to-cart-btn"),
+        "total_cart_button": (By.CSS_SELECTOR, "#app > ul > li:nth-child(2)"),
+        "total_price_display": (By.CSS_SELECTOR, "#app > div:nth-child(3) > div.pay-container > button"),
+        "open_cart_button": (By.CSS_SELECTOR, "#app > ul > li:nth-child(2) > a"),
+    }
     def __init__(self, driver: WebDriver) -> None:
         """
         Initialize the MenuPage.
@@ -95,3 +101,18 @@ class MenuPage(BasePage):
             return True
         except TimeoutException:
             return False
+
+    def add_products_to_cart(self, count: int = 3):
+        """
+        Click on a specified number of 'Add to Cart' buttons
+        """
+        add_buttons = self.find_elements(self.locators["add_to_cart_buttons"])
+
+        if not add_buttons:
+            self.logger.info("No explicit 'add to cart' buttons found. Clicking on cup components.")
+            for i in range(1, min(count, len(self.cups())) + 1):
+                self.click_on_cup_by_order(i)
+            return
+
+        for i in range(min(count, len(add_buttons))):
+            add_buttons[i].click()
