@@ -51,8 +51,6 @@ class CupComponent(BaseComponent):
         Returns:
             AddCupModal: The opened modal component.
         """
-        from pages.components.add_cup_modal import AddCupModal
-
         actions = ActionChains(self.driver)
         actions.context_click(self.body).perform()
         self.logger.debug(f"Right-clicked on cup: {self.name}")
