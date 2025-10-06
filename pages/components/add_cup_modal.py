@@ -2,7 +2,6 @@
 
 from enum import Enum
 
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -37,11 +36,7 @@ class AddCupModal(BaseComponent):
             parent (WebElement, optional): Parent element containing the modal.
         """
         if parent is None:
-            try:
-                parent = self.find_element(self.locators["ROOT"])
-                self.logger.debug("Found modal root element for parent")
-            except NoSuchElementException:
-                self.logger.debug("Modal root element not found for parent")
+            parent = driver.find_element(*self.locators["ROOT"])
         super().__init__(driver, parent)
         self.logger.debug("Initializing AddCupModal component")
 
@@ -56,7 +51,7 @@ class AddCupModal(BaseComponent):
             return False
 
         is_displayed = self.parent.is_displayed()
-        has_open_attr = self.parent.get_attribute("open") is not None
+        has_open_attr = self.parent.get_attribute("open")
         is_open = is_displayed and has_open_attr
 
         self.logger.debug(f"Modal open status: {is_open}")
@@ -125,17 +120,13 @@ class AddCupModal(BaseComponent):
         Returns:
             dict: CSS properties and their values.
         """
-        if not self.parent:
-            self.logger.debug("Cannot get dialog styles: root element is None")
-            return {}
-
         properties = {
-            "width": "width",
-            "height": "height",
-            "backgroundColor": "backgroundColor",
-            "color": "color",
-            "margin": "margin",
-            "borderWidth": "borderWidth",
+            "position": "position",
+            "display": "display",
+            "backgroundColor": "background-color",
+            "borderStyle": "border-style",
+            "borderColor": "border-color",
+            "borderWidth": "border-width",
             "padding": "padding",
         }
         return self.get_styles(self.parent, properties)

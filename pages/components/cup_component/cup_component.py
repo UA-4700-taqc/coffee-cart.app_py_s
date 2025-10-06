@@ -2,11 +2,13 @@
 
 from typing import List
 
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from pages.base import BaseComponent, DictLocatorType
+from pages.components.add_cup_modal import AddCupModal
 from pages.components.cup_component.ingredient_component import IngredientComponent
 
 
@@ -42,3 +44,17 @@ class CupComponent(BaseComponent):
     def click(self):
         """Click on cup's body."""
         self.body.click()
+
+    def open_add_cup_modal(self) -> "AddCupModal":
+        """Right-click on the cup to open Add Cup Modal.
+
+        Returns:
+            AddCupModal: The opened modal component.
+        """
+        from pages.components.add_cup_modal import AddCupModal
+
+        actions = ActionChains(self.driver)
+        actions.context_click(self.body).perform()
+        self.logger.debug(f"Right-clicked on cup: {self.name}")
+
+        return AddCupModal(self.driver)
