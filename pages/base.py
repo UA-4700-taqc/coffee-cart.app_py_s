@@ -3,6 +3,7 @@
 import re
 from typing import Dict, List, Tuple
 
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By, ByType
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -200,3 +201,18 @@ class BaseComponent(Base):
     def _get_classes(self) -> List[str]:
         """Return CSS classes applied to this component."""
         return super().get_classes(self.parent)
+
+    def hover_on_element(self, element: WebElement) -> None:
+        """Hover over a given element using ActionChains."""
+        if element:
+            self.logger.debug(f"Hovering over element: {element}")
+            actions = ActionChains(self.driver)
+            actions.move_to_element(element).perform()
+        else:
+            self.logger.debug("Cannot hover: element is None")
+
+    def hover_on(self) -> None:
+        """Hover over self using ActionChains."""
+        self.logger.debug(f"Hovering over element: {self}")
+        actions = ActionChains(self.driver)
+        actions.move_to_element(self.parent).perform()
