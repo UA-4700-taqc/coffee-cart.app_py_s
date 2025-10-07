@@ -1,6 +1,6 @@
 """Module for CupComponent UI component."""
 
-from typing import List
+from typing import List, Optional
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -16,8 +16,8 @@ class CupComponent(BaseComponent):
     locators: DictLocatorType = {
         "name": (By.XPATH, ".//h4"),
         "price": (By.XPATH, ".//h4/small"),
-        "body": (By.CLASS_NAME, "cup"),
-        "ingredients": (By.CSS_SELECTOR, ".ingredients li"),
+        "body": (By.CLASS_NAME, "cup-body"),
+        "ingredients": (By.CLASS_NAME, "ingredient"),
     }
 
     def __init__(self, driver: WebDriver, parent: WebElement) -> None:
@@ -34,11 +34,18 @@ class CupComponent(BaseComponent):
         self.price: str = self.find_element(self.locators["price"]).text.strip()
         self.ingredients: List[IngredientComponent] = self.get_ingredients()
 
-    def get_ingredients(self) -> List[IngredientComponent]:
-        """Return list of ingredient components for this cup."""
-        elements = self.find_elements(self.locators["body"])
-        return [IngredientComponent(self.driver, el) for el in elements]
-
     def click(self):
         """Click on cup's body."""
         self.body.click()
+
+    def get_ingredients(self) -> List[IngredientComponent]:
+        """Return list of ingredient components for this cup."""
+        ingredients_elements = self.body.find_elements(*self.locators["ingredients"])
+        return [IngredientComponent(self.driver, el) for el in ingredients_elements]
+
+    def get_ingredient_by_name(self, ingredient_name: str) -> Optional['IngredientComponent']:
+        for ingredient in self.ingredients:
+            if ingredient.get_name().lower() == ingredient_name.lower():
+                return ingredient
+        return None
+
