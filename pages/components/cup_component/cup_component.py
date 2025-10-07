@@ -51,3 +51,8 @@ class CupComponent(BaseComponent):
             if ingredient.get_name().lower() == ingredient_name.lower():
                 return ingredient
         return None
+
+    def get_price(self) -> float:
+        """Return the price of the cup as a float."""
+        price_text = self.price.replace("$", "").strip()
+        return float(price_text)
