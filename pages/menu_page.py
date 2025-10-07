@@ -11,6 +11,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from config.resources import IMPLICIT_WAIT
 from pages.base import BasePage, DictLocatorType
 from pages.components.cup_component.cup_component import CupComponent
+from pages.components.pay_component.pay_component import PayComponent
 from pages.components.promo_component import PromoComponent
 
 
@@ -20,6 +21,7 @@ class MenuPage(BasePage):
     locators: DictLocatorType = {
         "cups": (By.XPATH, "//li/h4/.."),
         "promo": (By.CLASS_NAME, "promo"),
+        "pay_container": (By.CSS_SELECTOR, "div.pay-container"),
         "pay_button": (By.CSS_SELECTOR, "button.pay"),
         "pay_modal": (By.CSS_SELECTOR, "div.modal"),
         "success_snackbar": (By.CSS_SELECTOR, "div.snackbar"),
@@ -90,6 +92,15 @@ class MenuPage(BasePage):
         promo = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(self.locators["promo"]))
         return PromoComponent(self.driver, promo)
 
+    def pay(self) -> PayComponent:
+        """
+        Get the pay component.
+
+        Returns:
+            PayComponent.
+        """
+        pay = self.find_element(self.locators["pay_container"])
+        return PayComponent(self.driver, pay)
     def click_pay_button(self) -> "PaymentDetailsModal":  # noqa=F821
         """
         Click on pay button.
