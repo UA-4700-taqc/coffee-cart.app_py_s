@@ -8,13 +8,18 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from pages.base import BasePage, DictLocatorType
 from pages.components.cup_component.cup_component import CupComponent
+from pages.components.pay_component.pay_component import PayComponent
 from pages.components.promo_component import PromoComponent
 
 
 class MenuPage(BasePage):
     """Coffee menu page."""
 
-    locators: DictLocatorType = {"cups": (By.XPATH, "//li/h4/.."), "promo": (By.CLASS_NAME, "promo")}
+    locators: DictLocatorType = {
+        "cups": (By.XPATH, "//li/h4/.."),
+        "promo": (By.CLASS_NAME, "promo"),
+        "pay_container": (By.CSS_SELECTOR, "div.pay-container"),
+    }
 
     def __init__(self, driver: WebDriver) -> None:
         """
@@ -80,3 +85,13 @@ class MenuPage(BasePage):
         """
         promo = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(self.locators["promo"]))
         return PromoComponent(self.driver, promo)
+
+    def pay(self) -> PayComponent:
+        """
+        Get the pay component.
+
+        Returns:
+            PayComponent.
+        """
+        pay = self.find_element(self.locators["pay_container"])
+        return PayComponent(self.driver, pay)
