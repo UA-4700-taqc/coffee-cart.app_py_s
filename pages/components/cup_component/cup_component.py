@@ -52,6 +52,18 @@ class CupComponent(BaseComponent):
                 return ingredient
         return None
 
+    def get_ingredients_text(self) -> List[str]:
+        """Return a list of ingredient names from the displayed order (UI)."""
+        ingredients_elements = self.find_elements(self.locators["ingredients"])
+
+        # Collect the text of each ingredient
+        ingredient_texts = [ingredient.text.strip() for ingredient in ingredients_elements]
+
+        # Reverse the list if ingredients are displayed bottom to top
+        ingredient_texts.reverse()
+
+        return ingredient_texts
+
     def get_price(self) -> float:
         """Return the price of the cup as a float."""
         price_text = self.price.replace("$", "").strip()
