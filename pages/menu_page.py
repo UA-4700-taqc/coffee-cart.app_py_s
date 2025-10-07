@@ -91,6 +91,7 @@ class MenuPage(BasePage):
         cups[order - 1].click()
         return self
 
+    @allure.step("Get the promo banner component")
     def promo(self) -> PromoComponent:
         """
         Get the promo banner component.
@@ -101,6 +102,7 @@ class MenuPage(BasePage):
         promo = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(self.locators["promo"]))
         return PromoComponent(self.driver, promo)
 
+    @allure.step("Check if promo banner is visible")
     def is_promo_displayed(self, timeout: int = 5) -> bool:
         """Check if the promo element is visible."""
         try:
@@ -109,6 +111,7 @@ class MenuPage(BasePage):
         except TimeoutException:
             return False
 
+    @allure.step("Get total amount on Menu page")
     def pay(self) -> PayComponent:
         """
         Get the pay component.
@@ -119,6 +122,7 @@ class MenuPage(BasePage):
         pay = self.find_element(self.locators["pay_container"])
         return PayComponent(self.driver, pay)
 
+    @allure.step("Get payment details by pay-button click on Menu page")
     def click_pay_button(self) -> "PaymentDetailsModal":  # noqa=F821
         """
         Click on pay button.
@@ -132,6 +136,7 @@ class MenuPage(BasePage):
         pay_modal_we = self.find_element(self.locators["pay_modal"])
         return PaymentDetailsModal(self.driver, pay_modal_we)
 
+    @allure.step("Check if success snack bar is visible on Menu page")
     def get_snackbar_success_we(self) -> WebElement | None:
         """
         Wait until the success snack bar becomes visible (style='') and return it.
