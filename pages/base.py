@@ -3,6 +3,7 @@
 import re
 from typing import Dict, List, Tuple
 
+import allure
 from selenium.webdriver.common.by import By, ByType
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -126,6 +127,7 @@ class BasePage(Base):
 
         return GitHubPage(self.driver)
 
+    @allure.step("Finding single element by locator: {locator}")
     def find_element(self, locator: LocatorType) -> WebElement:
         """
         Find a single element using the given locator.
@@ -138,6 +140,7 @@ class BasePage(Base):
         """
         return self.driver.find_element(*locator)
 
+    @allure.step("Finding multiple elements by locator: {locator}")
     def find_elements(self, locator: LocatorType) -> List[WebElement]:
         """
         Find multiple elements using the given locator.

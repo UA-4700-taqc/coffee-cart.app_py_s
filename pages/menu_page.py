@@ -1,7 +1,9 @@
 """Menu page for coffee items."""
 from typing import List, Optional
 
-from selenium.common import NoSuchElementException, TimeoutException
+import allure
+from selenium.common import NoSuchElementException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -21,6 +23,9 @@ class MenuPage(BasePage):
     locators: DictLocatorType = {
         "cups": (By.XPATH, "//li/h4/.."),
         "promo": (By.CLASS_NAME, "promo"),
+        "total_cart_button": (By.CSS_SELECTOR, "#app > ul > li:nth-child(2)"),
+        "total_price_display": (By.CSS_SELECTOR, "#app > div:nth-child(3) > div.pay-container > button"),
+        "open_cart_button": (By.CSS_SELECTOR, "#app > ul > li:nth-child(2) > a"),
         "pay_container": (By.CSS_SELECTOR, "div.pay-container"),
         "pay_button": (By.CSS_SELECTOR, "button.pay"),
         "pay_modal": (By.CSS_SELECTOR, "div.modal"),
@@ -36,6 +41,7 @@ class MenuPage(BasePage):
         """
         super().__init__(driver)
 
+    @allure.step("Get all cup components on the menu page")
     def cups(self) -> List[CupComponent]:
         """
         Get all cup components on the menu page.
@@ -46,6 +52,7 @@ class MenuPage(BasePage):
         cups = self.find_elements(self.locators["cups"])
         return [CupComponent(self.driver, cup) for cup in cups]
 
+    @allure.step("Get cup by name: {cup_name}")
     def get_cup_by_name(self, cup_name: str) -> Optional[CupComponent]:
         """
         Find cup by its name from the list of cups.
@@ -60,6 +67,7 @@ class MenuPage(BasePage):
             if cup.name == cup_name:
                 return cup
 
+    @allure.step("Click on cup by name: {cup_name}")
     def click_on_cup_by_name(self, cup_name: str) -> "MenuPage":
         """
         Click on cup with specific name.
@@ -71,6 +79,7 @@ class MenuPage(BasePage):
         cup.click()
         return self
 
+    @allure.step("Click on cup by order: {order}")
     def click_on_cup_by_order(self, order: int) -> "MenuPage":
         """
         Click on cup with specific number on the page.
@@ -92,6 +101,14 @@ class MenuPage(BasePage):
         promo = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(self.locators["promo"]))
         return PromoComponent(self.driver, promo)
 
+    def is_promo_displayed(self, timeout: int = 5) -> bool:
+        """Check if the promo element is visible."""
+        try:
+            WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located(self.locators["promo"]))
+            return True
+        except TimeoutException:
+            return False
+
     def pay(self) -> PayComponent:
         """
         Get the pay component.
@@ -101,6 +118,7 @@ class MenuPage(BasePage):
         """
         pay = self.find_element(self.locators["pay_container"])
         return PayComponent(self.driver, pay)
+
     def click_pay_button(self) -> "PaymentDetailsModal":  # noqa=F821
         """
         Click on pay button.

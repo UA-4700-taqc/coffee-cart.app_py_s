@@ -2,6 +2,7 @@
 
 from typing import List, Optional
 
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -34,6 +35,7 @@ class CupComponent(BaseComponent):
         self.price: str = self.find_element(self.locators["price"]).text.strip()
         self.ingredients: List[IngredientComponent] = self.get_ingredients()
 
+    @allure.step("click on cup")
     def click(self):
         """Click on cup's body."""
         self.body.click()
@@ -43,9 +45,9 @@ class CupComponent(BaseComponent):
         ingredients_elements = self.body.find_elements(*self.locators["ingredients"])
         return [IngredientComponent(self.driver, el) for el in ingredients_elements]
 
-    def get_ingredient_by_name(self, ingredient_name: str) -> Optional['IngredientComponent']:
+    def get_ingredient_by_name(self, ingredient_name: str) -> Optional["IngredientComponent"]:
+        """Return ingredient component by its name, or None if not found."""
         for ingredient in self.ingredients:
             if ingredient.get_name().lower() == ingredient_name.lower():
                 return ingredient
         return None
-
