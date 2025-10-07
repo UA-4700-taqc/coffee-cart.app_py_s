@@ -6,6 +6,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from pages.base import BaseComponent
+from pages.components.pay_component.pay_preview_item_component import PayPreviewItemComponent
 
 
 class PayComponent(BaseComponent):
@@ -13,6 +14,7 @@ class PayComponent(BaseComponent):
 
     locators = {
         "total_pay_button": (By.CLASS_NAME, "pay"),
+        "preview_modal": (By.XPATH, "//ul[contains(@class, 'cart-preview')]"),
     }
 
     def __init__(self, driver: WebDriver, parent: WebElement):
@@ -42,3 +44,8 @@ class PayComponent(BaseComponent):
         This button also displays the total amount.
         """
         self.find_element(*self.locators["total_pay_button"]).click()
+
+    def pay_preview(self) -> PayPreviewItemComponent:
+        """Get the PayPreviewItemComponent for the current pay preview item."""
+        pay_preview = self.find_element(self.locators["preview_modal"])
+        return PayPreviewItemComponent(self.driver, pay_preview)

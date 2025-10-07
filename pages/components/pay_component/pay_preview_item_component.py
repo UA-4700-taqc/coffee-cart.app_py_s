@@ -12,21 +12,23 @@ class PayPreviewItemComponent(BaseComponent):
     """Component representing a single item in the pay preview list."""
 
     locators = {
-        "name": (By.XPATH, ".//div/span"),
-        "quantity": (By.XPATH, './/div/span[@class="unit-desc"]'),
-        "plus_button": (By.XPATH, ".//div/button[1]"),
-        "minus_button": (By.XPATH, ".//div/button[2]"),
+        "pay_preview_container": (By.XPATH, "//ul[contains(@class, 'cart-preview')]"),
+        "name": (By.XPATH, "//div/span"),
+        "quantity": (By.XPATH, '//div/span[@class="unit-desc"]'),
+        "plus_button": (By.XPATH, "//div/button[1]"),
+        "minus_button": (By.XPATH, "//div/button[2]"),
     }
 
     def __init__(self, driver: WebDriver, parent: WebElement) -> None:
         """Initialize the component."""
         super().__init__(driver, parent)
-        self.name: str = parent.find_element(*self.locators["name"]).text.strip()
-        self.quantity: int = int(parent.find_element(*self.locators["quantity"]).text[2:])
 
-    def increment_click(self) -> None:
+    def increment_click(self, order) -> None:
         """Click on the plus button to increase quantity."""
-        self.find_element(*self.locators["plus_button"]).click()
-    def decrement_click(self) -> None:
+        increment_button = self.find_element((By.XPATH, f"//li[{order}]//div/button[1]"))
+        increment_button.click()
+
+    def decrement_click(self, order) -> None:
         """Click on the minus button to decrease quantity."""
-        self.find_element(*self.locators["minus_button"]).click()
+        decrement_button = self.find_element((By.XPATH, f"//li[{order}]//div/button[2]"))
+        decrement_button.click()
