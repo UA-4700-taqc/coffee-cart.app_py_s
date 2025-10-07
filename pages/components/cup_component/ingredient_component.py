@@ -17,6 +17,10 @@ class IngredientComponent(BaseComponent):
         """Return the ingredient name (text inside the element)."""
         return self.parent.text.strip()
 
+    def get_name(self) -> str:
+        """Public method to get the ingredient name."""
+        return self._get_name()
+
     def _get_height_style(self) -> str:
         """Return the value of the 'style' attribute from the parent element."""
         return self.parent.get_attribute("style") or ""
@@ -34,3 +38,7 @@ class IngredientComponent(BaseComponent):
         """Return the height percentage parsed from the style attribute."""
         style = self._get_height_style()
         return self._parse_height(style)
+
+    def get_color(self) -> str:
+        """Return the background color of the ingredient."""
+        return self.parent.value_of_css_property("background-color")
