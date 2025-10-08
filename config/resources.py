@@ -7,3 +7,5 @@ load_dotenv()
 
 BASE_URL: str = os.getenv("BASE_URL")
 IMPLICIT_WAIT: int = int(os.getenv("IMPLICIT_WAIT", 0))
+DRIVER_VERSION: str = os.getenv("DRIVER_VERSION")
+

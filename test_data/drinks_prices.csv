@@ -1,0 +1,10 @@
+drink_name,expected_price
+Espresso,10.00
+Espresso Macchiato,12.00
+Cappuccino,19.00
+Mocha,8.00
+Flat White,18.00
+Americano,7.00
+Cafe Latte,16.00
+Espresso Con Panna,14.00
+Cafe Breve,15.00
