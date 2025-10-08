@@ -16,21 +16,28 @@ from pages.components.cup_component.cup_component import CupComponent
 from pages.components.pay_component.pay_component import PayComponent
 from pages.components.promo_component import PromoComponent
 
+from pages.components.pay_component.pay_preview_component import PayPreviewComponent
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from pages.cart_page import CartPage
 
 class MenuPage(BasePage):
     """Coffee menu page."""
 
-    locators: DictLocatorType = {
-        "cups": (By.XPATH, "//li/h4/.."),
-        "promo": (By.CLASS_NAME, "promo"),
-        "total_cart_button": (By.CSS_SELECTOR, "#app > ul > li:nth-child(2)"),
-        "total_price_display": (By.CSS_SELECTOR, "#app > div:nth-child(3) > div.pay-container > button"),
-        "open_cart_button": (By.CSS_SELECTOR, "#app > ul > li:nth-child(2) > a"),
-        "pay_container": (By.CSS_SELECTOR, "div.pay-container"),
-        "pay_button": (By.CSS_SELECTOR, "button.pay"),
-        "pay_modal": (By.CSS_SELECTOR, "div.modal"),
-        "success_snackbar": (By.CSS_SELECTOR, "div.snackbar"),
-    }
+    locators: DictLocatorType = {"cups": (By.XPATH, "//li/h4/.."),
+                                 "promo": (By.CLASS_NAME, "promo"),
+
+                                 "total_cart_button": (By.CSS_SELECTOR, "#app > ul > li:nth-child(2)"),
+                                 "total_price_display": (By.CSS_SELECTOR,
+                                                         "#app > div:nth-child(3) > div.pay-container > button"),
+                                 "open_cart_button": (By.CSS_SELECTOR, "#app > ul > li:nth-child(2) > a"),
+                                 "pay_container": (By.CSS_SELECTOR, "div.pay-container"),
+                                 "pay_button": (By.CSS_SELECTOR, "button.pay"),
+                                 "pay_modal": (By.CSS_SELECTOR, "div.modal"),
+                                 "success_snackbar": (By.CSS_SELECTOR, "div.snackbar"),
+                                 "checkout_button": (By.CSS_SELECTOR, "div.pay-container button[data-test='checkout']"),
+                                 "nav_cart_count": (By.XPATH, "//a[@aria-label='Cart page']"),
+                                 "no_coffee_message": (By.XPATH, "//div[text()='No coffee, go add some.']"),
+                                 }
 
     def __init__(self, driver: WebDriver) -> None:
         """
@@ -154,3 +161,67 @@ class MenuPage(BasePage):
             return None
         finally:
             self.driver.implicitly_wait(IMPLICIT_WAIT)
+
+    def get_checkout_button_text(self) -> str:
+        """
+        Returns the text of the ‘Total: $XX.XX’ button in the shopping cart preview.
+
+        Returns:
+            str: The full text of the Total button.
+        """
+        return self.find_element(self.locators["checkout_button"]).text
+
+    def wait_for_total_update(self, expected_total: str) -> "MenuPage":
+        """
+        Waits until the Total button updates its text to the expected amount.
+
+        Args:
+            expected_total: The expected amount in the format “$XX.XX”.
+
+        Returns:
+            MenuPage: The current MenuPage object for the chain of calls.
+        """
+        expected_text = f"Total: {expected_total}"
+        WebDriverWait(self.driver, 5).until(
+            EC.text_to_be_present_in_element(self.locators["checkout_button"], expected_text)
+        )
+        return self
+
+    def get_nav_cart_count(self) -> str:
+        """
+        Returns the basket counter in navigation (for example, ‘(2)’).
+
+        Returns:
+            str: The counter text in parentheses.
+        """
+        full_text = self.find_element(self.locators["nav_cart_count"]).text
+        # Розділяємо "cart (X)" і повертаємо "(X)"
+        return full_text.split(" ")[-1]
+
+    def wait_for_nav_count_update(self, expected_count: str) -> "MenuPage":
+        """
+        Waits until the basket counter in navigation updates its text.
+
+        Args:
+            expected_count: Expected quantity in the format “(X)”.
+
+        Returns:
+            MenuPage: Current MenuPage object.
+        """
+        expected_text = f"cart {expected_count}"
+        WebDriverWait(self.driver, 5).until(
+            EC.text_to_be_present_in_element(self.locators["nav_cart_count"], expected_text)
+        )
+        return self
+
+
+
+    def go_to_cart_page(self) -> CartPage:
+        """
+        Clicks on the “cart” link in the navigation and navigates to CartPage.
+
+        Returns:
+            CartPage: The shopping cart page object.
+        """
+        self.find_element(self.locators["nav_cart_count"]).click()
+        return CartPage(self.driver)

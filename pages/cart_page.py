@@ -35,6 +35,7 @@ class CartPage(BasePage):
         super().__init__(driver)
         self.driver = driver
 
+    @allure.step("Get root container for cart page")
     def _root(self) -> WebElement:
         """Return the root container for the cart page content."""
         return self.find_element(self.locators["cart_root"])
