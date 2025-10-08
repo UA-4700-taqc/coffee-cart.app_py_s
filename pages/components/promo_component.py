@@ -59,6 +59,9 @@ class PromoComponent(BaseComponent):
         self.find_element(self.locators["yes_button"]).click()
         return MenuPage(self.driver)
 
-    def press_no(self) -> None:
+    def press_no(self) -> "MenuPage":  # noqa: F821
         """Click on 'Nah, I'll skip.' button."""
+        from pages.menu_page import MenuPage
+
         self.find_element(self.locators["no_button"]).click()
+        return MenuPage(self.driver)

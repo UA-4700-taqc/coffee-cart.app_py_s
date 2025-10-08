@@ -15,7 +15,6 @@ from pages.base import BasePage, DictLocatorType
 from pages.components.cup_component.cup_component import CupComponent
 from pages.components.pay_component.pay_component import PayComponent
 from pages.components.promo_component import PromoComponent
-from pages.components.promo_component import PromoComponent
 
 from pages.components.pay_component.pay_preview_component import PayPreviewComponent
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
