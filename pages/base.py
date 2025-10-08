@@ -4,6 +4,7 @@ import re
 from typing import Dict, List, Tuple
 
 import allure
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By, ByType
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -81,6 +82,13 @@ class Base:
         """Return list of CSS classes from an element."""
         class_attr = element.get_attribute("class") or ""
         return class_attr.split()
+
+    def fill_input(self, element: WebElement, text: str) -> None:
+        """Fill input field with reliable clearing."""
+        element.click()
+        element.send_keys(Keys.CONTROL, "a")
+        element.send_keys(Keys.DELETE)
+        element.send_keys(text)
 
 
 class BasePage(Base):

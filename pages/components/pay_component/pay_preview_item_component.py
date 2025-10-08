@@ -1,6 +1,7 @@
 """Module for PayPreviewItemComponent UI component."""
 from typing import Any
 
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -24,9 +25,12 @@ class PayPreviewItemComponent(BaseComponent):
         self.name: str = parent.find_element(*self.locators["name"]).text.strip()
         self.quantity: int = int(parent.find_element(*self.locators["quantity"]).text[2:])
 
+    @allure.step("Click pay preview '+' button on Menu page")
     def increment_click(self) -> None:
         """Click on the plus button to increase quantity."""
         self.find_element(*self.locators["plus_button"]).click()
+
+    @allure.step("Click pay preview '-' button on Menu page")
     def decrement_click(self) -> None:
         """Click on the minus button to decrease quantity."""
         self.find_element(*self.locators["minus_button"]).click()
