@@ -18,7 +18,7 @@ __all__ = ["driver", "driver_menu_page", "driver_cart_page"]
 def driver():
     """Fixture to initialize and quit the WebDriver instance."""
     with allure.step(f"Initialize WebDriver instance with ChromeDriver version {DRIVER_VERSION}"):
-        service = Service(ChromeDriverManager(driver_version="140.0.7339.207").install())
+        service = Service(ChromeDriverManager(driver_version=DRIVER_VERSION).install())
         chrome_options = webdriver.ChromeOptions()
         driver = webdriver.Chrome(service=service, options=chrome_options)
         driver.implicitly_wait(IMPLICIT_WAIT)
