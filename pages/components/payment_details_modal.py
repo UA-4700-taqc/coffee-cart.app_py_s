@@ -26,24 +26,12 @@ class PaymentDetailsModal(BaseComponent):
         """Return True if payment modal is displayed."""
         return self.parent.is_displayed()
 
-    def _fill_name(self, name: str) -> None:
-        """Fill name input field."""
-        name_input = self.find_element(self.locators["name_input"])
-        name_input.click()
-        name_input.clear()
-        name_input.send_keys(name)
-
-    def _fill_email(self, email: str) -> None:
-        """Fill email input field."""
-        email_input = self.find_element(self.locators["email_input"])
-        email_input.click()
-        email_input.clear()
-        email_input.send_keys(email)
-
     def fill_credentials(self, user: User) -> "PaymentDetailsModal":
         """Fill name and email input fields."""
-        self._fill_name(user.name)
-        self._fill_email(user.email)
+        name_input = self.find_element(self.locators["name_input"])
+        email_input = self.find_element(self.locators["email_input"])
+        self.fill_input(name_input, user.name)
+        self.fill_input(email_input, user.email)
         return self
 
     def click_submit_successfully(self) -> "MenuPage":
