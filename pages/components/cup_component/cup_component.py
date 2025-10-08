@@ -3,6 +3,7 @@
 from typing import List, Optional
 
 import allure
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -40,6 +41,11 @@ class CupComponent(BaseComponent):
         """Click on cup's body."""
         self.body.click()
 
+    @allure.step("click on cup name")
+    def click_name(self):
+        """Click on cup's name."""
+        self.parent.find_element(*self.locators["name"]).click()
+
     def get_ingredients(self) -> List[IngredientComponent]:
         """Return list of ingredient components for this cup."""
         ingredients_elements = self.body.find_elements(*self.locators["ingredients"])
@@ -68,3 +74,19 @@ class CupComponent(BaseComponent):
         """Return the price of the cup as a float."""
         price_text = self.price.replace("$", "").strip()
         return float(price_text)
+
+    def get_name(self) -> str:
+        """Return the name of the cup as a string."""
+        name = self.find_element(self.locators["name"]).text.split("\n")[0].strip()
+        return name
+
+    @allure.step("Click on cup name")
+    def double_click_on_cup_name(self) -> None:
+        """
+        Double lick on cup name to get Chinese translation.
+
+        Args:
+            cup_name: name of cup to click on.
+        """
+        actions = ActionChains(self.driver)
+        actions.double_click(self.parent.find_element(*self.locators["name"])).perform()
