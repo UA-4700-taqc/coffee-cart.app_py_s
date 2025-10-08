@@ -165,24 +165,24 @@ class MenuPage(BasePage):
         return CartPage(self.driver)
 
 
-@allure.step("Add {count} products to the cart")
-def add_products_to_cart(self, count: int) -> "MenuPage":
-    """
-    Click the first cup component specified number of times to add products to the cart.
-    Args:
-        count: The number of products to add.
-    """
-    first_cup_locator = self.locators["cups"]
-    cups = self.find_elements(first_cup_locator)
-    if not cups:
+    @allure.step("Add {count} products to the cart")
+    def add_products_to_cart(self, count: int) -> "MenuPage":
+        """
+        Click the first cup component specified number of times to add products to the cart.
+        Args:
+            count: The number of products to add.
+        """
+        first_cup_locator = self.locators["cups"]
+        cups = self.find_elements(first_cup_locator)
+        if not cups:
+            return self
+
+        first_cup_we = cups[0]
+
+        for i in range(count):
+            try:
+                first_cup_we.click()
+            except Exception as e:
+                break
+
         return self
-
-    first_cup_we = cups[0]
-
-    for i in range(count):
-        try:
-            first_cup_we.click()
-        except Exception as e:
-            break
-
-    return self

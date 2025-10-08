@@ -2,7 +2,6 @@ import pytest
 import re
 from pages.menu_page import MenuPage
 from pages.cart_page import CartPage
-import time
 
 def parse_price(price_text: str) -> float:
     """
