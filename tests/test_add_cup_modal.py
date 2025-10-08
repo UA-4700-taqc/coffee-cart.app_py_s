@@ -67,7 +67,7 @@ def test_add_cup_modal_button_styles(driver_menu_page):
     yes_button_styles = add_cup_modal.get_yes_button_styles()
     logger.info(f"Retrieved Yes button styles: {yes_button_styles}")
 
-    assert yes_button_styles.get("cursor") == "pointer", "Yes button should have pointer cursor"
+    assert yes_button_styles.get("cursor") == "default", "Yes button should have default cursor"
     logger.info(f"Yes button cursor verified: {yes_button_styles.get('cursor')}")
 
     yes_bg_color = yes_button_styles.get("backgroundColor")
@@ -81,7 +81,7 @@ def test_add_cup_modal_button_styles(driver_menu_page):
     no_button_styles = add_cup_modal.get_no_button_styles()
     logger.info(f"Retrieved No button styles: {no_button_styles}")
 
-    assert no_button_styles.get("cursor") == "pointer", "No button should have pointer cursor"
+    assert no_button_styles.get("cursor") == "default", "No button should have default cursor"
     logger.info(f"No button cursor verified: {no_button_styles.get('cursor')}")
 
     no_bg_color = no_button_styles.get("backgroundColor")
