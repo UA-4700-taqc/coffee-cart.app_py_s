@@ -1,14 +1,16 @@
 """Implement UI component for the Add Cup Modal dialog."""
 
 from enum import Enum
+from typing import TYPE_CHECKING
 
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from pages.base import BaseComponent, DictLocatorType
-from pages.menu_page import MenuPage
+
+if TYPE_CHECKING:
+    from pages.menu_page import MenuPage
 
 
 class ButtonType(Enum):
@@ -37,11 +39,7 @@ class AddCupModal(BaseComponent):
             parent (WebElement, optional): Parent element containing the modal.
         """
         if parent is None:
-            try:
-                parent = self.find_element(self.locators["ROOT"])
-                self.logger.debug("Found modal root element for parent")
-            except NoSuchElementException:
-                self.logger.debug("Modal root element not found for parent")
+            parent = driver.find_element(*self.locators["ROOT"])
         super().__init__(driver, parent)
         self.logger.debug("Initializing AddCupModal component")
 
@@ -56,7 +54,7 @@ class AddCupModal(BaseComponent):
             return False
 
         is_displayed = self.parent.is_displayed()
-        has_open_attr = self.parent.get_attribute("open") is not None
+        has_open_attr = self.parent.get_attribute("open")
         is_open = is_displayed and has_open_attr
 
         self.logger.debug(f"Modal open status: {is_open}")
@@ -94,24 +92,28 @@ class AddCupModal(BaseComponent):
         self.logger.debug(f"Getting {button_type.name} button")
         return self.parent.find_element(By.XPATH, self.locators[button_type.value][1])
 
-    def confirm(self) -> MenuPage:
+    def confirm(self) -> "MenuPage":
         """Click 'Yes' to add item to cart.
 
         Returns:
             MenuPage: The menu page after confirming.
         """
+        from pages.menu_page import MenuPage
+
         self.logger.debug("Attempting to confirm modal")
 
         self._get_button_element(ButtonType.YES).click()
         self.logger.debug("Modal confirmed")
         return MenuPage(driver=self.driver)
 
-    def cancel(self) -> MenuPage:
+    def cancel(self) -> "MenuPage":
         """Click 'No' to dismiss the modal.
 
         Returns:
             MenuPage: The menu page after canceling.
         """
+        from pages.menu_page import MenuPage
+
         self.logger.debug("Attempting to cancel modal")
 
         self._get_button_element(ButtonType.NO).click()
@@ -125,17 +127,49 @@ class AddCupModal(BaseComponent):
         Returns:
             dict: CSS properties and their values.
         """
-        if not self.parent:
-            self.logger.debug("Cannot get dialog styles: root element is None")
-            return {}
-
         properties = {
-            "width": "width",
-            "height": "height",
-            "backgroundColor": "backgroundColor",
-            "color": "color",
-            "margin": "margin",
-            "borderWidth": "borderWidth",
+            "position": "position",
+            "display": "display",
+            "backgroundColor": "background-color",
+            "borderStyle": "border-style",
+            "borderColor": "border-color",
+            "borderWidth": "border-width",
             "padding": "padding",
         }
         return self.get_styles(self.parent, properties)
+
+    def get_yes_button_styles(self) -> dict:
+        """Get CSS styles of Yes button.
+
+        Returns:
+            dict: CSS properties and their values.
+        """
+        properties = {
+            "cursor": "cursor",
+            "backgroundColor": "background-color",
+            "color": "color",
+            "borderRadius": "border-radius",
+            "padding": "padding",
+        }
+        yes_button = self._get_button_element(ButtonType.YES)
+        styles = self.get_styles(yes_button, properties)
+        self.logger.debug(f"Yes button styles: {styles}")
+        return styles
+
+    def get_no_button_styles(self) -> dict:
+        """Get CSS styles of No button.
+
+        Returns:
+            dict: CSS properties and their values.
+        """
+        properties = {
+            "cursor": "cursor",
+            "backgroundColor": "background-color",
+            "color": "color",
+            "borderRadius": "border-radius",
+            "padding": "padding",
+        }
+        no_button = self._get_button_element(ButtonType.NO)
+        styles = self.get_styles(no_button, properties)
+        self.logger.debug(f"No button styles: {styles}")
+        return styles

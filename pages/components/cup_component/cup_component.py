@@ -9,6 +9,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from pages.base import BaseComponent, DictLocatorType
+from pages.components.add_cup_modal import AddCupModal
 from pages.components.cup_component.ingredient_component import IngredientComponent
 
 
@@ -41,11 +42,6 @@ class CupComponent(BaseComponent):
         """Click on cup's body."""
         self.body.click()
 
-    @allure.step("click on cup name")
-    def click_name(self):
-        """Click on cup's name."""
-        self.parent.find_element(*self.locators["name"]).click()
-
     def get_ingredients(self) -> List[IngredientComponent]:
         """Return list of ingredient components for this cup."""
         ingredients_elements = self.body.find_elements(*self.locators["ingredients"])
@@ -74,6 +70,18 @@ class CupComponent(BaseComponent):
         """Return the price of the cup as a float."""
         price_text = self.price.replace("$", "").strip()
         return float(price_text)
+
+    def open_add_cup_modal(self) -> "AddCupModal":
+        """Right-click on the cup to open Add Cup Modal.
+
+        Returns:
+            AddCupModal: The opened modal component.
+        """
+        actions = ActionChains(self.driver)
+        actions.context_click(self.body).perform()
+        self.logger.debug(f"Right-clicked on cup: {self.name}")
+
+        return AddCupModal(self.driver)
 
     def get_name(self) -> str:
         """Return the name of the cup as a string."""
