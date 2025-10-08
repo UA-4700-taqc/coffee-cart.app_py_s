@@ -81,3 +81,16 @@ class CartPage(BasePage):
             if self.get_empty_cart_we().is_displayed():
                 return True
         return False
+
+    def get_number_of_items(self) -> int:
+        """Return the current number of unique item components in the cart."""
+        return len(self.items())
+
+    def get_cart_total_price(self) -> str:
+        """Retrieve the "Total" price text from the PayComponent."""
+        return self.pay().get_total_price_text()
+
+    def open_cart(self):
+        """Clicks the cart icon/Total button in the header to open the cart (Step 2)."""
+        self.go_to_cart_page()
+        return self

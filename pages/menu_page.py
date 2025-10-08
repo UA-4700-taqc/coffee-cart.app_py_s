@@ -12,6 +12,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from config.resources import IMPLICIT_WAIT
 from pages.base import BasePage, DictLocatorType
+from pages.cart_page import CartPage
 from pages.components.cup_component.cup_component import CupComponent
 from pages.components.pay_component.pay_component import PayComponent
 from pages.components.promo_component import PromoComponent
@@ -162,6 +163,41 @@ class MenuPage(BasePage):
         finally:
             self.driver.implicitly_wait(IMPLICIT_WAIT)
 
+    def get_cart_total_price_display(self) -> str:
+        """Retrieve the text of the "Total" price display element."""
+        total_price_element = WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located(self.locators["total_price_display"])
+        )
+        return total_price_element.text
+
+    def open_cart(self) -> CartPage:
+        """Clicks the cart icon/Total button and returns the CartPage object."""
+        self.wait_for_element_and_click(self.locators["open_cart_button"])
+
+        return CartPage(self.driver)
+
+
+    @allure.step("Add {count} products to the cart")
+    def add_products_to_cart(self, count: int) -> "MenuPage":
+        """
+        Click the first cup component specified number of times to add products to the cart.
+        Args:
+            count: The number of products to add.
+        """
+        first_cup_locator = self.locators["cups"]
+        cups = self.find_elements(first_cup_locator)
+        if not cups:
+            return self
+
+        first_cup_we = cups[0]
+
+        for i in range(count):
+            try:
+                first_cup_we.click()
+            except Exception as e:
+                break
+
+        return self
     def get_checkout_button_text(self) -> str:
         """
         Returns the text of the ‘Total: $XX.XX’ button in the shopping cart preview.

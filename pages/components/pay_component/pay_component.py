@@ -25,16 +25,26 @@ class PayComponent(BaseComponent):
         super().__init__(driver, parent)
         self.driver: WebDriver = driver
 
+    def get_total_price_text(self) -> str:
+        """
+        Return the raw text of the total amount displayed on the Pay button.
+        This is used to verify the displayed price is responsive (Step 3).
+
+        :return: The full text string from the 'Total' button (e.g., "Total: $10.50").
+        """
+        return self.find_element(self.locators["total_pay_button"]).text
+
     def get_total_amount(self) -> float:
         """Return the total order amount as a float.
 
         The method uses the Pay/Total button text.
         """
-        total_button_text: str = self.find_element(self.locators["total_pay_button"]).text
+        total_button_text: str = self.get_total_price_text() # Use the new method
         prefix = "Total: $"
         if total_button_text.startswith(prefix):
             total_button_text = total_button_text.replace(prefix, "", 1)
         return float(total_button_text)
+
 
     def click_pay(self) -> None:
         """Click the Pay/Total button to proceed with the payment.
