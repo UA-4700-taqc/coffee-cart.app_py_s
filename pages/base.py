@@ -3,10 +3,13 @@
 import re
 from typing import Dict, List, Tuple
 
-from selenium.webdriver import ActionChains
+import allure
+from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.common.by import By, ByType
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from utilities.logger import Logger
 
@@ -80,6 +83,13 @@ class Base:
         class_attr = element.get_attribute("class") or ""
         return class_attr.split()
 
+    def fill_input(self, element: WebElement, text: str) -> None:
+        """Fill input field with reliable clearing."""
+        element.click()
+        element.send_keys(Keys.CONTROL, "a")
+        element.send_keys(Keys.DELETE)
+        element.send_keys(text)
+
 
 class BasePage(Base):
     """Base class for all page objects."""
@@ -127,6 +137,7 @@ class BasePage(Base):
 
         return GitHubPage(self.driver)
 
+    @allure.step("Finding single element by locator: {locator}")
     def find_element(self, locator: LocatorType) -> WebElement:
         """
         Find a single element using the given locator.
@@ -139,6 +150,7 @@ class BasePage(Base):
         """
         return self.driver.find_element(*locator)
 
+    @allure.step("Finding multiple elements by locator: {locator}")
     def find_elements(self, locator: LocatorType) -> List[WebElement]:
         """
         Find multiple elements using the given locator.
@@ -150,6 +162,16 @@ class BasePage(Base):
             list: List of found WebElements.
         """
         return self.driver.find_elements(*locator)
+
+    def wait_for_element_and_click(self, locator: Tuple[str, str], timeout: int = 10) -> WebElement:
+        """Wait for the element to become clickable, clicks it, and returns the element."""
+        element = WebDriverWait(self.driver, timeout).until(EC.element_to_be_clickable(locator))
+        element.click()
+        return element
+
+    def wait_for_presence_and_get_element(self, locator: Tuple[str, str], timeout: int = 5) -> WebElement:
+        """Wait for the element to appear in the DOM."""
+        return WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located(locator))
 
 
 class BaseComponent(Base):
