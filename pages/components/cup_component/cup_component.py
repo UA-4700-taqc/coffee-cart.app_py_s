@@ -82,3 +82,19 @@ class CupComponent(BaseComponent):
         self.logger.debug(f"Right-clicked on cup: {self.name}")
 
         return AddCupModal(self.driver)
+
+    def get_name(self) -> str:
+        """Return the name of the cup as a string."""
+        name = self.find_element(self.locators["name"]).text.split("\n")[0].strip()
+        return name
+
+    @allure.step("Click on cup name")
+    def double_click_on_cup_name(self) -> None:
+        """
+        Double lick on cup name to get Chinese translation.
+
+        Args:
+            cup_name: name of cup to click on.
+        """
+        actions = ActionChains(self.driver)
+        actions.double_click(self.parent.find_element(*self.locators["name"])).perform()
