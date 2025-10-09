@@ -7,7 +7,10 @@ from selenium.common import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
+from config.resources import IMPLICIT_WAIT
 from pages.base import BasePage, DictLocatorType
 from pages.components.cart_item_component import CartItemComponent
 from pages.components.pay_component.pay_component import PayComponent
@@ -40,12 +43,17 @@ class CartPage(BasePage):
 
     @allure.step("Get cart item list")
     def items(self) -> List[CartItemComponent]:
-        """Return list of cart item components."""
-        root = self._root()
-        self.driver.implicitly_wait(2)
-        elements = root.find_elements(*self.locators["items"])
-        self.driver.implicitly_wait(10)
-        return [CartItemComponent(self.driver, el) for el in elements]
+        """Return list of cart item components if found any or empty list."""
+        try:
+            self.driver.implicitly_wait(0)
+            WebDriverWait(self.driver, 2).until(EC.visibility_of_element_located(self.locators["items"]))
+
+            elements = self.find_elements(self.locators["items"])
+            return [CartItemComponent(self.driver, el) for el in elements]
+        except (NoSuchElementException, TimeoutException):
+            return []
+        finally:
+            self.driver.implicitly_wait(IMPLICIT_WAIT)
 
     @allure.step("Get total amount on Cart page")
     def pay(self) -> PayComponent:
@@ -65,12 +73,12 @@ class CartPage(BasePage):
     def get_empty_cart_we(self) -> WebElement | None:
         """Return empty cart web element if found or None."""
         try:
-            self.driver.implicitly_wait(2)
-            return self.find_element(self.locators["empty_cart"])
+            self.driver.implicitly_wait(0)
+            return WebDriverWait(self.driver, 2).until(EC.presence_of_element_located(self.locators["empty_cart"]))
         except (NoSuchElementException, TimeoutException):
             return None
         finally:
-            self.driver.implicitly_wait(10)
+            self.driver.implicitly_wait(IMPLICIT_WAIT)
 
     @allure.step("Check if empty cart message is visible on Cart page")
     def is_empty_cart_displayed(self) -> bool:
