@@ -3,6 +3,7 @@
 from enum import Enum
 from typing import TYPE_CHECKING
 
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -43,6 +44,7 @@ class AddCupModal(BaseComponent):
         super().__init__(driver, parent)
         self.logger.debug("Initializing AddCupModal component")
 
+    @allure.step("Check if modal is open")
     def is_open(self) -> bool:
         """Check if the dialog is open.
 
@@ -58,8 +60,10 @@ class AddCupModal(BaseComponent):
         is_open = is_displayed and has_open_attr
 
         self.logger.debug(f"Modal open status: {is_open}")
+        allure.attach(str(is_open), "Modal Open Status", allure.attachment_type.TEXT)
         return is_open
 
+    @allure.step("Get modal message text")
     def get_message_text(self) -> str:
         """Get the full dialog message text.
 
@@ -70,6 +74,7 @@ class AddCupModal(BaseComponent):
         self.logger.debug(f"Found message text: '{message}'")
         return message
 
+    @allure.step("Get product name from modal")
     def get_product_name(self) -> str:
         """Get the product name from the dialog.
 
@@ -92,6 +97,7 @@ class AddCupModal(BaseComponent):
         self.logger.debug(f"Getting {button_type.name} button")
         return self.parent.find_element(By.XPATH, self.locators[button_type.value][1])
 
+    @allure.step("Click 'Yes' button to confirm")
     def confirm(self) -> "MenuPage":
         """Click 'Yes' to add item to cart.
 
@@ -106,6 +112,7 @@ class AddCupModal(BaseComponent):
         self.logger.debug("Modal confirmed")
         return MenuPage(driver=self.driver)
 
+    @allure.step("Click 'No' button to cancel")
     def cancel(self) -> "MenuPage":
         """Click 'No' to dismiss the modal.
 
@@ -121,6 +128,7 @@ class AddCupModal(BaseComponent):
 
         return MenuPage(driver=self.driver)
 
+    @allure.step("Get dialog styles")
     def get_dialog_styles(self) -> dict:
         """Get CSS styles of the dialog.
 
@@ -136,8 +144,11 @@ class AddCupModal(BaseComponent):
             "borderWidth": "border-width",
             "padding": "padding",
         }
-        return self.get_styles(self.parent, properties)
+        styles = self.get_styles(self.parent, properties)
+        self.logger.debug(f"Dialog styles: {styles}")
+        return styles
 
+    @allure.step("Get Yes button styles")
     def get_yes_button_styles(self) -> dict:
         """Get CSS styles of Yes button.
 
@@ -156,6 +167,7 @@ class AddCupModal(BaseComponent):
         self.logger.debug(f"Yes button styles: {styles}")
         return styles
 
+    @allure.step("Get No button styles")
     def get_no_button_styles(self) -> dict:
         """Get CSS styles of No button.
 
