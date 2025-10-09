@@ -1,5 +1,4 @@
 """Module for PayPreviewItemComponent UI component."""
-from typing import Any
 
 import allure
 from selenium.webdriver.common.by import By
@@ -35,3 +34,17 @@ class PayPreviewItemComponent(BaseComponent):
         """Click on the minus button to decrease quantity."""
         decrement_button = self.find_element((By.XPATH, f"//li[{order}]//div/button[2]"))
         decrement_button.click()
+
+    @allure.step("Get item name")
+    def get_name(self) -> str:
+        """Get the name of the item."""
+        name = self.find_element(self.locators["name"]).text
+        self.logger.debug(f"Item name: {name}")
+        return name
+
+    @allure.step("Get item quantity")
+    def get_quantity(self) -> str:
+        """Get the quantity description of the item."""
+        quantity = self.find_element(self.locators["quantity"]).text
+        self.logger.debug(f"Item quantity: {quantity}")
+        return quantity

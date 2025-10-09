@@ -1,6 +1,7 @@
 """Module for PayPreviewComponent UI component."""
 
-from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
+import allure
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -33,6 +34,7 @@ class PayPreviewComponent(BaseComponent):
 
         self.parent = self.find_element(self.locators["ROOT_PREVIEW"])
 
+    @allure.step("Check if pay preview is visible")
     def is_visible(self) -> bool:
         """Check if the cart preview is visible (has the 'show' class).
 
@@ -50,6 +52,7 @@ class PayPreviewComponent(BaseComponent):
         self.logger.debug(f"Preview visibility check result: {result}")
         return result
 
+    @allure.step("Get all preview items")
     def get_items(self) -> list:
         """Get all items in the cart preview.
 
@@ -70,6 +73,7 @@ class PayPreviewComponent(BaseComponent):
         self.logger.debug(f"Found {len(items_list)} items in preview")
         return items_list
 
+    @allure.step("Get preview item count")
     def get_item_count(self) -> int:
         """Get the number of items in the cart preview.
 
@@ -83,6 +87,7 @@ class PayPreviewComponent(BaseComponent):
         self.logger.debug(f"Item count: {count}")
         return count
 
+    @allure.step("Get preview styles")
     def get_preview_styles(self) -> dict:
         """Get all relevant CSS styles of the cart preview.
 

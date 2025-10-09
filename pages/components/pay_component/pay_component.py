@@ -1,6 +1,6 @@
 """Component model for the total amount and payment button."""
-from typing import Tuple
 
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -27,6 +27,7 @@ class PayComponent(BaseComponent):
         super().__init__(driver, parent)
         self.driver: WebDriver = driver
 
+    @allure.step("Get total price text from Pay button on Menu page")
     def get_total_price_text(self) -> str:
         """Return the raw text of the total amount displayed on the Pay button.
 
@@ -35,6 +36,7 @@ class PayComponent(BaseComponent):
         """
         return self.find_element(self.locators["total_pay_button"]).text
 
+    @allure.step("Get total amount as float from Pay button on Menu page")
     def get_total_amount(self) -> float:
         """Return the total order amount as a float.
 
@@ -46,6 +48,7 @@ class PayComponent(BaseComponent):
             total_button_text = total_button_text.replace(prefix, "", 1)
         return float(total_button_text)
 
+    @allure.step("Click Pay/Total button on Menu page")
     def click_pay(self) -> None:
         """Click the Pay/Total button to proceed with the payment.
 
