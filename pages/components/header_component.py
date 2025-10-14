@@ -5,7 +5,7 @@ from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 
 from pages.base import BaseComponent
 from pages.cart_page import CartPage
-from pages.githab_page import GitHubPage
+from pages.github_page import GitHubPage
 from pages.menu_page import MenuPage
 
 

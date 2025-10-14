@@ -133,7 +133,7 @@ class BasePage(Base):
     def go_to_github_page(self) -> "GitHubPage":  # noqa=F821
         """Navigate to the GitHub page and return its page object."""
         self._header.click_github()
-        from pages.githab_page import GitHubPage
+        from pages.github_page import GitHubPage
 
         return GitHubPage(self.driver)
 
