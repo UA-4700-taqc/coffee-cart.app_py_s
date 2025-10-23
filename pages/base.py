@@ -1,9 +1,10 @@
 """Base classes for page objects and components using Selenium WebDriver."""
 
 import re
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import allure
+from selenium.common import NoSuchElementException, TimeoutException
 from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.common.by import By, ByType
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -11,6 +12,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from config.resources import IMPLICIT_WAIT
 from utilities.logger import Logger
 
 __all__ = ["BasePage", "BaseComponent", "LocatorType", "DictLocatorType"]
@@ -172,6 +174,26 @@ class BasePage(Base):
     def wait_for_presence_and_get_element(self, locator: Tuple[str, str], timeout: int = 5) -> WebElement:
         """Wait for the element to appear in the DOM."""
         return WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located(locator))
+
+    def safe_wait_find_visibility(self, locator: LocatorType, timeout: int = 2) -> Optional[WebElement]:
+        """Return web element if visible or None."""
+        try:
+            self.driver.implicitly_wait(0)
+            return WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located(locator))
+        except (NoSuchElementException, TimeoutException):
+            return None
+        finally:
+            self.driver.implicitly_wait(IMPLICIT_WAIT)
+
+    def safe_wait_find_presence(self, locator: LocatorType, timeout: int = 2) -> Optional[WebElement]:
+        """Return web element if present or None."""
+        try:
+            self.driver.implicitly_wait(0)
+            return WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located(locator))
+        except (NoSuchElementException, TimeoutException):
+            return None
+        finally:
+            self.driver.implicitly_wait(IMPLICIT_WAIT)
 
 
 class BaseComponent(Base):

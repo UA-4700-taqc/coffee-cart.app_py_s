@@ -44,16 +44,11 @@ class CartPage(BasePage):
     @allure.step("Get cart item list")
     def items(self) -> List[CartItemComponent]:
         """Return list of cart item components if found any or empty list."""
-        try:
-            self.driver.implicitly_wait(0)
-            WebDriverWait(self.driver, 2).until(EC.visibility_of_element_located(self.locators["items"]))
-
+        item = self.safe_wait_find_visibility(self.locators["items"])
+        if item:
             elements = self.find_elements(self.locators["items"])
             return [CartItemComponent(self.driver, el) for el in elements]
-        except (NoSuchElementException, TimeoutException):
-            return []
-        finally:
-            self.driver.implicitly_wait(IMPLICIT_WAIT)
+        return []
 
     @allure.step("Get total amount on Cart page")
     def pay(self) -> PayComponent:
@@ -72,13 +67,7 @@ class CartPage(BasePage):
     @allure.step("Get empty cart message on Cart page")
     def get_empty_cart_we(self) -> WebElement | None:
         """Return empty cart web element if found or None."""
-        try:
-            self.driver.implicitly_wait(0)
-            return WebDriverWait(self.driver, 2).until(EC.presence_of_element_located(self.locators["empty_cart"]))
-        except (NoSuchElementException, TimeoutException):
-            return None
-        finally:
-            self.driver.implicitly_wait(IMPLICIT_WAIT)
+        return self.safe_wait_find_presence(self.locators["empty_cart"])
 
     @allure.step("Check if empty cart message is visible on Cart page")
     def is_empty_cart_displayed(self) -> bool:
