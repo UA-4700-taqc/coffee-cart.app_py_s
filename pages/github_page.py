@@ -1,4 +1,4 @@
-"""Module for GithabPage UI component."""
+"""Module for GitHubPage UI component."""
 from selenium.webdriver.common.by import By
 
 from pages.base import BasePage
@@ -34,7 +34,7 @@ class GitHubPage(BasePage):
         return MenuPage(self.driver)
 
     def click_on_simulate_errors_link(self) -> "MenuPage":
-        """Switch to Menu page with ad=1."""
+        """Switch to Menu page with breakable=1."""
         self.find_element(self.locators["simulate_error_link"]).click()
         return MenuPage(self.driver)
 
@@ -43,5 +43,5 @@ class GitHubPage(BasePage):
         self.find_element(self.locators["recorder_panel_link"]).click()
 
     def click_on_open_performance_insights_panel_link(self) -> None:
-        """Open documentation about perfomance overview."""
+        """Open documentation about performance overview."""
         self.find_element(self.locators["performance_insights_panel_link"]).click()
